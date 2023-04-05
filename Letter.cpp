@@ -2,9 +2,9 @@
 
 Letter::Letter()
 {
-	origin = NULL;
-	technic = NULL;
-	printable = NULL;
+	origin = "";
+	technic = "";
+	printable = "";
 	isConsonant = NULL;
 	isVolve = NULL;
 	syll = NULL;
@@ -18,7 +18,7 @@ Letter::Letter()
 Letter::Letter(char symbol)
 {
 	origin = symbol;
-	technic = symbol;
+	technic = "";
 	printable = symbol;
 	isConsonant = false;
 	isVolve = false;

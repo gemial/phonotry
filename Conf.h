@@ -6,12 +6,17 @@
 #include <map>
 #include <algorithm>
 
+
 class Conf
 {
 public:
     Conf();
     Conf(std::string lng);
     ~Conf();
+
+    std::map<char, std::map<char, std::string>> getModifications() { return modifications; }
+    std::map<std::string, std::string> getAsSame() { return asSame; }
+    std::map<char, std::string> getAsOne() { return asOne; }
 
 private:
     std::map<char, std::map<char, std::string>> modifications;

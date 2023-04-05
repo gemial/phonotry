@@ -18,32 +18,47 @@ Conf::~Conf()
 {
 }
 
+//string utf8_to_string(const char* utf8str, const locale& loc)
+//{
+//    // UTF-8 to wstring
+//    wstring_convert<codecvt_utf8<wchar_t>> wconv;
+//    wstring wstr = wconv.from_bytes(utf8str);
+//    // wstring to string
+//    vector<char> buf(wstr.size());
+//    use_facet<ctype<wchar_t>>(loc).narrow(wstr.data(), wstr.data() + wstr.size(), '?', buf.data());
+//    return string(buf.data(), buf.size());
+//}
+
+
 void Conf::makeConfig(std::string lngPath)
 {
-    std::ifstream fin(lngPath); // Подгрзка файла json
-    nlohmann::json data = nlohmann::json::parse(fin); // Выделение json файла
+    std::ifstream fin(lngPath); // ГЏГ®Г¤ГЈГ°Г§ГЄГ  ГґГ Г©Г«Г  json
+    nlohmann::json data = nlohmann::json::parse(fin); // Г‚Г»Г¤ГҐГ«ГҐГ­ГЁГҐ json ГґГ Г©Г«Г 
 
-    makeAlphabetConfig(data["alphabet"]); // Преобразования алфавита из строкового типа в массив букв
+    makeAlphabetConfig(data["alphabet"]); // ГЏГ°ГҐГ®ГЎГ°Г Г§Г®ГўГ Г­ГЁГї Г Г«ГґГ ГўГЁГІГ  ГЁГ§ Г±ГІГ°Г®ГЄГ®ГўГ®ГЈГ® ГІГЁГЇГ  Гў Г¬Г Г±Г±ГЁГў ГЎГіГЄГў
 
-    consonants = data["consonants"]; // Выборка символов из consonants
+    //string d = data["alphabet"];
+    //d = utf8_to_string(d.c_str(), locale(".1252"));
 
-    volves = data["volves"]; // Выборка символов из volves
+    consonants = data["consonants"]; // Г‚Г»ГЎГ®Г°ГЄГ  Г±ГЁГ¬ГўГ®Г«Г®Гў ГЁГ§ consonants
 
-    // Соединение consonants и volves в один массив
+    volves = data["volves"]; // Г‚Г»ГЎГ®Г°ГЄГ  Г±ГЁГ¬ГўГ®Г«Г®Гў ГЁГ§ volves
+
+    // Г‘Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГҐ consonants ГЁ volves Гў Г®Г¤ГЁГ­ Г¬Г Г±Г±ГЁГў
     for (auto& i : consonants)
         words.push_back(i);
     for (auto& i : volves)
         words.push_back(i);
 
-    // Создание словаря: Буква с которой начинается комбинация букв - Сочетание символов (букв)
+    // Г‘Г®Г§Г¤Г Г­ГЁГҐ Г±Г«Г®ГўГ Г°Гї: ГЃГіГЄГўГ  Г± ГЄГ®ГІГ®Г°Г®Г© Г­Г Г·ГЁГ­Г ГҐГІГ±Гї ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї ГЎГіГЄГў - Г‘Г®Г·ГҐГІГ Г­ГЁГҐ Г±ГЁГ¬ГўГ®Г«Г®Гў (ГЎГіГЄГў)
     std::vector<std::string> jAsOne;
     for (auto& i : data["as_one"])
         jAsOne.push_back(i);
     makeAsOneConfig(jAsOne);
 
-    makeAsSameConfig(data["as_same"], data["alphabet"]); // Создание словаря: Уникальный символ - Как символ слышится ( {'a':'a', 'p':'b', 'ph':'f'} )
+    makeAsSameConfig(data["as_same"], data["alphabet"]); // Г‘Г®Г§Г¤Г Г­ГЁГҐ Г±Г«Г®ГўГ Г°Гї: Г“Г­ГЁГЄГ Г«ГјГ­Г»Г© Г±ГЁГ¬ГўГ®Г« - ГЉГ ГЄ Г±ГЁГ¬ГўГ®Г« Г±Г«Г»ГёГЁГІГ±Гї ( {'a':'a', 'p':'b', 'ph':'f'} )
 
-    // Создания словаря: (Первая буква - (вторая буква - значение))
+    // Г‘Г®Г§Г¤Г Г­ГЁГї Г±Г«Г®ГўГ Г°Гї: (ГЏГҐГ°ГўГ Гї ГЎГіГЄГўГ  - (ГўГІГ®Г°Г Гї ГЎГіГЄГўГ  - Г§Г­Г Г·ГҐГ­ГЁГҐ))
     std::map<std::string, std::string> jDictionary;
     for (nlohmann::json::iterator it = data["modifications"].begin(); it != data["modifications"].end(); it++)
         jDictionary.emplace(it.key(), it.value());
@@ -59,26 +74,32 @@ void Conf::makeAlphabetConfig(std::string jAlphabet)
 void Conf::makeAsOneConfig(std::vector<std::string> jAsOne)
 {
     for (auto& i : jAsOne)
-        if (asOne.find((char)i[0]) == asOne.end())
+    {
+        auto it = asOne.find((char)i[0]);
+        if (it == asOne.end())
             asOne.emplace((char)i[0], i);
+        else
+            it->second = i;
+    }
+        
 }
 
 void Conf::makeAsSameConfig(std::vector<std::vector<std::string>> jAsSame, std::string jAlphabet)
 {
-    for (int i = 0; i < jAlphabet.size(); i++) // Добавление всех букв алфавита в словарь: Буква - Буква
+    for (int i = 0; i < jAlphabet.size(); i++) // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГўГ±ГҐГµ ГЎГіГЄГў Г Г«ГґГ ГўГЁГІГ  Гў Г±Г«Г®ГўГ Г°Гј: ГЃГіГЄГўГ  - ГЃГіГЄГўГ 
     {
         std::string tempStr(1, jAlphabet[i]);
         asSame.emplace(tempStr, tempStr);
     }
-    for (int i = 0; i < jAsSame.size(); i++) // Добавление недостающих символов и сочетаний букв, замена значений словаря на "как слышится"
+    for (int i = 0; i < jAsSame.size(); i++) // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г­ГҐГ¤Г®Г±ГІГ ГѕГ№ГЁГµ Г±ГЁГ¬ГўГ®Г«Г®Гў ГЁ Г±Г®Г·ГҐГІГ Г­ГЁГ© ГЎГіГЄГў, Г§Г Г¬ГҐГ­Г  Г§Г­Г Г·ГҐГ­ГЁГ© Г±Г«Г®ГўГ Г°Гї Г­Г  "ГЄГ ГЄ Г±Г«Г»ГёГЁГІГ±Гї"
     {
         for (auto& j : jAsSame[i])
         {
-            // Добавление уникальных сиволов и сочетаний букв
+            // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГіГ­ГЁГЄГ Г«ГјГ­Г»Гµ Г±ГЁГўГ®Г«Г®Гў ГЁ Г±Г®Г·ГҐГІГ Г­ГЁГ© ГЎГіГЄГў
             if (asSame.find(j) == asSame.end())
                 asSame.emplace(j, j);
 
-            // Поиск и замена значений словаря на "как слышится"
+            // ГЏГ®ГЁГ±ГЄ ГЁ Г§Г Г¬ГҐГ­Г  Г§Г­Г Г·ГҐГ­ГЁГ© Г±Г«Г®ГўГ Г°Гї Г­Г  "ГЄГ ГЄ Г±Г«Г»ГёГЁГІГ±Гї"
             std::map<std::string, std::string> ::iterator it = asSame.find(j);
             it->second = jAsSame[i][0];
         }
@@ -89,13 +110,13 @@ void Conf::makeModificationsConfig(std::map<std::string, std::string> jDictionar
 {
     for (auto& i : jDictionary)
     {
-        if (modifications.find(i.first[0]) == modifications.end()) // Добавление в словарь, если первая буква отсутствует
+        if (modifications.find(i.first[0]) == modifications.end()) // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Гў Г±Г«Г®ГўГ Г°Гј, ГҐГ±Г«ГЁ ГЇГҐГ°ГўГ Гї ГЎГіГЄГўГ  Г®ГІГ±ГіГІГ±ГІГўГіГҐГІ
         {
             std::map<char, std::string> tmp;
             tmp.emplace(i.first[1], i.second);
             modifications.emplace(i.first[0], tmp);
         }
-        else // Добавление в подсловарь, если первая буква присутствует
+        else // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Гў ГЇГ®Г¤Г±Г«Г®ГўГ Г°Гј, ГҐГ±Г«ГЁ ГЇГҐГ°ГўГ Гї ГЎГіГЄГўГ  ГЇГ°ГЁГ±ГіГІГ±ГІГўГіГҐГІ
         {
             std::map<char, std::map<char, std::string>> ::iterator it = modifications.find(i.first[0]);
             it->second.emplace(i.first[1], i.second);

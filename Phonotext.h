@@ -15,6 +15,7 @@ public:
 	~Phonotext();
 
 	std::forward_list<Letter> basetext;
+	std::forward_list<Letter> SP;
 
 	std::pair<int, int> countLetters();
 	std::string getOrigin();

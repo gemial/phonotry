@@ -31,7 +31,7 @@ std::pair<int, int> Phonotext::countLetters()
 	{
 		if (symb.isConsonant)
 			count.first++;
-		if (symb.isVolve && symb.printable != '\n') // Вернуться к вопросу хранения данных ("--endl")
+		if (symb.isVolve && symb.printable != "\n" && symb.printable != "--endl") // Вернуться к вопросу хранения данных ("--endl")
 		{
 			count.second++;
 			count.first++;
