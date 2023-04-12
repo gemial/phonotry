@@ -6,7 +6,7 @@ class Letter
 {
 public:	
 	Letter();
-	Letter(char symbol);
+	Letter(std::string symbol);
 	~Letter();
 
 	// char to string

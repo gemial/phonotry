@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-
+#include <iostream>
 
 class Conf
 {
@@ -14,12 +14,12 @@ public:
     Conf(std::string lng);
     ~Conf();
 
-    std::map<char, std::map<char, std::string>> getModifications() { return modifications; }
+    std::map<std::string, std::map<std::string, std::string>> getModifications() { return modifications; }
     std::map<std::string, std::string> getAsSame() { return asSame; }
     std::map<char, std::string> getAsOne() { return asOne; }
 
 private:
-    std::map<char, std::map<char, std::string>> modifications;
+    std::map<std::string, std::map<std::string, std::string>> modifications;
     std::map<char, std::string> asOne;
     std::vector<std::string> consonants;
     std::vector<std::string> volves;

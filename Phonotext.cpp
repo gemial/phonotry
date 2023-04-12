@@ -10,11 +10,14 @@ Phonotext::Phonotext(std::string text)
 		return;
 
 	// Генерация односвязного списка букв
-	basetext.emplace_front(Letter(tolower(text[0])));
+	unsigned char b = text[0];
+	basetext.emplace_front(Letter(text.substr(0,1)));
+
 	std::forward_list<Letter>::iterator iter = basetext.begin();
-	for (int i = 1; i < text.size(); i++)
+	for (int i = 1, l = 0; i < text.size(); i+=l)
 	{
-		basetext.emplace_after(iter, Letter(tolower(text[i])));
+		for(l = 0; text[i] & (0x80 >> l); ++l); l = (l)?l:1; // find next letter
+		basetext.emplace_after(iter, Letter(text.substr(i, l)));
 		++iter;
 	}
 }

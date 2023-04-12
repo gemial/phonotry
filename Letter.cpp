@@ -15,7 +15,7 @@ Letter::Letter()
 	accent = NULL;
 }
 
-Letter::Letter(char symbol)
+Letter::Letter(std::string symbol)
 {
 	origin = symbol;
 	technic = "";
