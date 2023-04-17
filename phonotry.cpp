@@ -1,10 +1,10 @@
 //#define UNICODE
 
-#include <windows.h>
+// #include <windows.h>
 
 #include <iostream>
 
-#include "conf.h"
+#include "Conf.h"
 #include "Letter.h"
 #include "Phonotext.h"
 
@@ -18,7 +18,7 @@
 
 void SPmaxProccessor(Phonotext* pt)
 {
-    pt->SP.emplace_front(Letter(' '));
+    pt->SP.emplace_front(Letter(" "));
     std::forward_list<Letter>::iterator SPlast = pt->SP.begin();
 
     for (auto& it : pt->basetext)
@@ -78,7 +78,7 @@ void sameProcessor(Phonotext *pt, std::map<std::string, std::string> asSame)
     }
 }
 
-void modifyProccessor(Phonotext *pt, std::map<char, std::map<char, std::string>> modifications)
+void modifyProccessor(Phonotext *pt, std::map<std::string, std::map<std::string, std::string>> modifications)
 {
     std::string tmp_a;
     std::string tmp_b;
@@ -91,7 +91,7 @@ void modifyProccessor(Phonotext *pt, std::map<char, std::map<char, std::string>>
     {
         if (needChange)
         {
-            it->printable = tmp_c[2];
+            it->printable = "";
             needChange = false;
         }
         if (it == pt->basetext.begin())
@@ -103,17 +103,20 @@ void modifyProccessor(Phonotext *pt, std::map<char, std::map<char, std::string>>
             tmp_a = tmp_b;
             tmp_b = it->origin;
 
-            auto modFirstKey = modifications.find(tmp_a[0]);
+            auto modFirstKey = modifications.find(tmp_a);
             if (modFirstKey != modifications.end())
             {
-                auto modSecondKey = modFirstKey->second.find(tmp_b[0]);
+                int i, l;
+                auto modSecondKey = modFirstKey->second.find(tmp_b);
                 if (modSecondKey != modFirstKey->second.end())
                 {
                     tmp_c = modSecondKey->second;
+                    for(i = 0; tmp_c[0] & (0x80 >> i); ++i); i = (i)?i:1; // find first letter
+                    for(l = 0; tmp_c[i] & (0x80 >> l); ++l); l = (l)?l:1; // find second letter
 
-                    itPreviosLetter->printable = tmp_c[0];
-                    it->printable = tmp_c[1];
-                    pt->basetext.emplace_after(it, Letter('&'));
+                    itPreviosLetter->origin = tmp_c.substr(0, i);
+                    it->origin = tmp_c.substr(i, l);
+                    pt->basetext.emplace_after(it, Letter(tmp_c.substr(i + l)));
                     needChange = true;
                 }
             }
@@ -158,11 +161,11 @@ void print(Phonotext pt)
 int main()
 {
     //system("chcp 65001");
-    SetConsoleOutputCP(65001);
+    // SetConsoleOutputCP(65001);
 
     Conf CONFIG("rus"); // Выбор языка
 
-    Phonotext pt("привет, как дела");
+    Phonotext pt("сегодня пришёл юнга");
     print(pt);
 
     modifyProccessor(&pt, CONFIG.getModifications());

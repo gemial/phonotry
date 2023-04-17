@@ -1,4 +1,4 @@
-#include "conf.h"
+#include "Conf.h"
 
 Conf::Conf()
 {
@@ -108,18 +108,22 @@ void Conf::makeAsSameConfig(std::vector<std::vector<std::string>> jAsSame, std::
 
 void Conf::makeModificationsConfig(std::map<std::string, std::string> jDictionary)
 {
+    int l;
     for (auto& i : jDictionary)
     {
-        if (modifications.find(i.first[0]) == modifications.end()) // Äîáàâëåíèå â ñëîâàðü, åñëè ïåðâàÿ áóêâà îòñóòñòâóåò
+        for(l = 0; i.first[0] & (0x80 >> l); ++l); l = (l)?l:1; 
+        // i.first.substr(0,l) -> first letter; i.first.substr(l) -> second letter
+
+        if (modifications.find(i.first.substr(0, l)) == modifications.end()) // Äîáàâëåíèå â ñëîâàðü, åñëè ïåðâàÿ áóêâà îòñóòñòâóåò
         {
-            std::map<char, std::string> tmp;
-            tmp.emplace(i.first[1], i.second);
-            modifications.emplace(i.first[0], tmp);
+            std::map<std::string, std::string> tmp;
+            tmp.emplace(i.first.substr(l), i.second);
+            modifications.emplace(i.first.substr(0, l), tmp);
         }
         else // Äîáàâëåíèå â ïîäñëîâàðü, åñëè ïåðâàÿ áóêâà ïðèñóòñòâóåò
         {
-            std::map<char, std::map<char, std::string>> ::iterator it = modifications.find(i.first[0]);
-            it->second.emplace(i.first[1], i.second);
+            std::map<std::string, std::map<std::string, std::string>> ::iterator it = modifications.find(i.first.substr(0, l));
+            it->second.emplace(i.first.substr(l), i.second);
         }
     }
 }
