@@ -1,8 +1,10 @@
 //#define UNICODE
 
-// #include <windows.h>
+//#include <windows.h>
 
 #include <iostream>
+#include <vector>
+#include <forward_list>
 
 #include "Conf.h"
 #include "Letter.h"
@@ -13,19 +15,47 @@
 //char ZERO_SPACE = '\u200B';
 
 
+using namespace std;
 
+
+
+vector<forward_list<Letter>::iterator> finderVolve(Phonotext* pt)
+{
+    vector<forward_list<Letter>::iterator> volveIterators;
+    for (auto it = pt->basetext.begin(); it != pt->basetext.end(); it++)
+        if (it->isVolve)
+            volveIterators.push_back(it);
+
+    return volveIterators;
+}
 
 
 void SPmaxProccessor(Phonotext* pt)
 {
-    pt->SP.emplace_front(Letter(" "));
-    std::forward_list<Letter>::iterator SPlast = pt->SP.begin();
+    vector<pair<forward_list<Letter>::iterator, forward_list<Letter>::iterator>> dividedVolveIterators;
 
-    for (auto& it : pt->basetext)
-        if (!(it.isVolve) && it.origin != "\n")
-            SPlast = pt->SP.emplace_after(SPlast, it);
+    forward_list<Letter>::iterator startVolveIt, middleVolveIt, endVolveIt;
+    bool firstVolve = false;
 
-    pt->SP.pop_front();
+    vector<forward_list<Letter>::iterator> volveIterators = finderVolve(pt);
+
+    if (volveIterators.size() > 1)
+    {
+        startVolveIt = pt->basetext.begin();
+        middleVolveIt = volveIterators[0];
+
+        for (int i = 1; i < volveIterators.size(); i++)
+        {
+            endVolveIt = volveIterators[i];
+
+            dividedVolveIterators.push_back(make_pair(startVolveIt, endVolveIt));
+
+            middleVolveIt++;
+            startVolveIt = middleVolveIt;
+            middleVolveIt = endVolveIt;
+            // дальше идёт ваше условие
+        }
+    }
 }
 
 void joinProccessor(Phonotext* pt, std::map<char, std::string> asSame)
@@ -35,32 +65,42 @@ void joinProccessor(Phonotext* pt, std::map<char, std::string> asSame)
     std::string tmp_c;
 
     auto itPreviosLetter = pt->basetext.begin();
+    bool deleteLast = false;
+    bool flag = true;
 
-    for (auto it = pt->basetext.begin(); it != pt->basetext.end(); it++)
+    for (auto it = pt->basetext.begin(); it != pt->basetext.end(); it++);
+    auto it = pt->basetext.begin();
+    while (it != pt->basetext.end())
     {
+        deleteLast = false;
         if (it == pt->basetext.begin())
-            tmp_b = it->origin;
+            tmp_a = it->origin;
         else
         {
-            tmp_a = (tmp_b == "&" ? "" : tmp_b);
-            tmp_b = (it->origin == "&" ? "" : it->origin);
+            tmp_a = itPreviosLetter->origin;
+            tmp_b = it->origin;
+            flag = true;
 
             auto sameKey = asSame.find(tmp_a[0]);
             if (sameKey != asSame.end())
             {
-                if ((tmp_a + tmp_b).size() == 1 && (tmp_a + tmp_b)[0] == sameKey->first) // rewrite
+                if ((tmp_a + tmp_b) == sameKey->second)
                 {
                     itPreviosLetter->origin = sameKey->second;
-                    itPreviosLetter->technic = sameKey->second;
                     itPreviosLetter->printable = sameKey->second;
-
-                    it = itPreviosLetter;
+                    itPreviosLetter->technic = sameKey->second;
+                    it++;
                     pt->basetext.erase_after(itPreviosLetter);
+                    flag = false;
+                    deleteLast = true;
                 }
             }
+            if (flag)
+                itPreviosLetter = it;
         }
-        itPreviosLetter = it;
+        it++;
     }
+
 }
 
 void sameProcessor(Phonotext *pt, std::map<std::string, std::string> asSame)
@@ -132,7 +172,7 @@ void print(Phonotext pt)
     std::cout << "origin   : ";
     for (auto& i : pt.basetext)
     {
-        std::cout << i.origin;
+        std::cout << i.origin << " ";
     }
     std::cout << std::endl;
     std::cout << "technic  : ";
@@ -147,12 +187,6 @@ void print(Phonotext pt)
         std::cout << i.printable;
     }
     std::cout << std::endl;
-    std::cout << "SP       : ";
-    for (auto& i : pt.SP)
-    {
-        std::cout << i.origin;
-    }
-    std::cout << "\n-----------\n";
 }
 
 
@@ -160,20 +194,25 @@ void print(Phonotext pt)
 
 int main()
 {
-    //system("chcp 65001");
-    // SetConsoleOutputCP(65001);
+    system("chcp 65001");
+    //SetConsoleOutputCP(65001);
 
     Conf CONFIG("rus"); // Выбор языка
 
-    Phonotext pt("сегодня пришёл юнга");
+    std::cout << "start\n";
+    Phonotext pt("сегодня пришёл юнгатсл");
     print(pt);
 
+    std::cout << "modify:\n";
     modifyProccessor(&pt, CONFIG.getModifications());
     print(pt);
+    std::cout << "same:\n";
     sameProcessor(&pt, CONFIG.getAsSame());
     print(pt);
-    joinProccessor(&pt, CONFIG.getAsOne());
+    std::cout << "join:\n";
+    joinProccessor(&pt, CONFIG.getAsOne()); //???
     print(pt);
+    std::cout << "sp:\n";
     SPmaxProccessor(&pt);
     print(pt);
 

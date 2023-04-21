@@ -2,6 +2,7 @@
 
 #include <forward_list>
 #include <string>
+#include <vector>
 
 #include <iostream>
 
@@ -15,7 +16,7 @@ public:
 	~Phonotext();
 
 	std::forward_list<Letter> basetext;
-	std::forward_list<Letter> SP;
+	std::vector<std::pair<std::forward_list<Letter>::iterator, std::forward_list<Letter>::iterator>> SP;
 
 	std::pair<int, int> countLetters();
 	std::string getOrigin();
