@@ -26,7 +26,7 @@ public:
 
 	std::forward_list<Letter> basetext;
 	std::vector<std::pair<std::forward_list<Letter>::iterator, std::forward_list<Letter>::iterator>> SP;
-	std::vector<std::vector<std::forward_list<Letter>::iterator>> syllableCombinations;
+	std::vector<std::vector<std::vector<std::forward_list<Letter>::iterator>>> syllableCombinations;
 	std::vector<Repeat> repeat;
 
 

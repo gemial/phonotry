@@ -134,39 +134,39 @@ void combinationsProccessor(Phonotext* pt, int N = 2)
 
         // Всевозможные пары комбинаций из индексов массива согласных
         vector<pair<int, int>> consCombs;
-        for (int j = 0; j < 5; j++)
-            for (int k = j + 1; k < 5; k++)
-                consCombs.push_back(make_pair(j, k));
+        for (int j = 0; j < posCons.size(); j++)
+            for (int k = j + 1; k < posCons.size(); k++)
+                consCombs.push_back(make_pair(posCons[j], posCons[k]));
 
         // Сборка комбинаций из СГС в разных вариантах (в итераторах)
-        vector<forward_list<Letter>::iterator> tmpItCombs;
+        vector<vector<forward_list<Letter>::iterator>> itCombs;
         for (int j = 0; j < consCombs.size(); j++)
         {
             // Создание сортированных комбинаций из пар индексов соглассных + индекс гласной
-            vector<int> tmpCombs;
-            tmpCombs.push_back(posCons[consCombs[j].first]);
-            tmpCombs.push_back(posCons[consCombs[j].second]);
-            tmpCombs.push_back(posVolve);
-            sort(tmpCombs.begin(), tmpCombs.end());
+            vector<int> combs;
+            combs.push_back(consCombs[j].first);
+            combs.push_back(consCombs[j].second);
+            combs.push_back(posVolve);
+            sort(combs.begin(), combs.end());
 
             // Поиск итераторов элементов выбранных в пары
             forward_list<Letter>::iterator it1, it2, it3;
             it1 = it2 = it3 = pt->SP[i].first;
 
-            for (int k = 0; k < posCons[2]; k++)
-            {
-                if (k <= tmpCombs[0])
-                    it1++;
-                if (k <= tmpCombs[1])
-                    it2++;
-                if (k <= tmpCombs[2])
-                    it3++;
-            }
+            for (int k = 0; k < combs[0]; k++)
+                it1++;
+            for (int k = 0; k < combs[1]; k++)
+                it2++;
+            for (int k = 0; k < combs[2]; k++)
+                it3++;
+
+            vector<forward_list<Letter>::iterator> tmpItCombs;
             tmpItCombs.push_back(it1);
             tmpItCombs.push_back(it2);
             tmpItCombs.push_back(it3);
+            itCombs.push_back(tmpItCombs);
         }
-        pt->syllableCombinations.push_back(tmpItCombs);
+        pt->syllableCombinations.push_back(itCombs);
 
         // Добавить то, что вытаскивается из итераторов и обработку из filter_combination
     }
@@ -204,10 +204,14 @@ void SPmaxProccessor(Phonotext* pt)
 
             middleVolveIt++;
             startVolveIt = middleVolveIt;
+            //if (startVolveIt->isVolve)
             middleVolveIt = endVolveIt;
             // дальше идёт ваше условие
         }
-        // возможно не берётся последний слог
+
+        endVolveIt = pt->basetext.end();
+        startVolveIt++;
+        dividedVolveIterators.push_back(make_pair(startVolveIt, endVolveIt));
     }
     pt->SP = dividedVolveIterators;
 }
@@ -310,6 +314,12 @@ void modifyProccessor(Phonotext *pt, std::map<std::string, std::map<std::string,
                     itPreviosLetter->origin = tmp_c.substr(0, i);
                     it->origin = tmp_c.substr(i, l);
                     pt->basetext.emplace_after(it, Letter(tmp_c.substr(i + l)));
+
+                    it->isVolve = false;
+                    auto tmpIt = it;
+                    tmpIt++;
+                    tmpIt->isVolve = true;
+
                     needChange = true;
                 }
             }
@@ -322,25 +332,29 @@ void modifyProccessor(Phonotext *pt, std::map<std::string, std::map<std::string,
 
 void print(Phonotext pt)
 {
+    std::cout << "===========\n";
     std::cout << "-----------\n";
     std::cout << "origin      : ";
     for (auto& i : pt.basetext)
     {
-        std::cout << i.origin;
+        std::cout << i.origin << " " ;
     }
     std::cout << std::endl;
+    std::cout << "-----------\n";
     std::cout << "technic     : ";
     for (auto& i : pt.basetext)
     {
         std::cout << i.technic;
     }
     std::cout << std::endl;
+    std::cout << "-----------\n";
     std::cout << "printable   : ";
     for (auto& i : pt.basetext)
     {
         std::cout << i.printable;
     }
     std::cout << std::endl;
+    std::cout << "-----------\n";
     std::cout << "isWord      : ";
     for (auto& i : pt.basetext)
     {
@@ -349,9 +363,36 @@ void print(Phonotext pt)
         else if (i.isConsonant)
             cout << "c";
         else
-            cout << " ";
+            cout << "n";
     }
     std::cout << std::endl;
+    std::cout << "-----------\n";
+    std::cout << "SP          :\n";
+    for (int i = 0; i < pt.SP.size(); i++)
+    {
+        cout << i << ": \"";
+        for (auto it = pt.SP[i].first; it != pt.SP[i].second; it++)
+        {
+           cout << it->origin;
+        }
+        cout << "\"" << endl;
+    }
+    cout << endl;
+    std::cout << "-----------\n";
+    std::cout << "combinations:\n";
+    for (int i = 0; i < pt.syllableCombinations.size(); i++)
+    {
+        cout << i << ":\n";
+        for (int j = 0; j < pt.syllableCombinations[i].size(); j++)
+        {
+            for (int k = 0; k < 3; k++)
+            cout << pt.syllableCombinations[i][j][k]->origin;
+            cout << endl;
+        }
+        cout<< endl;
+    }
+    cout << endl;
+    std::cout << "-----------\n";
 }
 
 void proccessor(Phonotext* pt, Conf CONFIG)
@@ -374,6 +415,10 @@ void proccessor(Phonotext* pt, Conf CONFIG)
 
     std::cout << "\nSP\n";
     SPmaxProccessor(pt);
+    print(*pt);
+
+    std::cout << "\ncombinations\n";
+    combinationsProccessor(pt);
     print(*pt);
 }
 
@@ -492,7 +537,7 @@ int main()
     Conf CONFIG("rus"); // Выбор языка
 
     std::cout << "start\n";
-    Phonotext pt("҄сегодня пришёл юнгатслтс");
+    Phonotext pt("сегодня пришёл юнгатслтс");
     print(pt);
 
     proccessor(&pt, CONFIG);
@@ -501,3 +546,6 @@ int main()
 }
 
 // первая буква скипается
+// number proccessor
+// w_pos
+// filter_rus_comb
