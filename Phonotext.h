@@ -3,6 +3,8 @@
 #include <forward_list>
 #include <string>
 #include <vector>
+#include <set>
+#include <map>
 
 #include <iostream>
 
@@ -11,10 +13,11 @@
 struct Repeat
 {
 	int count;
-	int power;
+	//std::vector<std::forward_list<Letter>::iterator> power; ?????
+	//pair<> repeatPower;
 	std::vector<Letter> letters;
-	std::vector<std::forward_list<Letter>::iterator> combs;
-	bool _words;
+	std::vector<std::vector<std::vector<std::forward_list<Letter>::iterator>>> combs;
+	std::set<std::string> _words;
 };
 
 class Phonotext
@@ -27,7 +30,7 @@ public:
 	std::forward_list<Letter> basetext;
 	std::vector<std::pair<std::forward_list<Letter>::iterator, std::forward_list<Letter>::iterator>> SP;
 	std::vector<std::vector<std::vector<std::forward_list<Letter>::iterator>>> syllableCombinations;
-	std::vector<Repeat> repeat;
+	std::map<std::string, Repeat> repeats;
 
 
 	std::pair<int, int> countLetters();

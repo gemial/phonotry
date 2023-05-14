@@ -27,5 +27,7 @@ public:
 
 	std::string getLetter();
 	std::string getLetterRepr();
+
+	bool operator ==(const Letter& letter) const;
 };
 

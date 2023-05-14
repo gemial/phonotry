@@ -18,7 +18,7 @@ Letter::Letter()
 Letter::Letter(std::string symbol)
 {
 	origin = symbol;
-	technic = "";
+	technic = "+";
 	printable = symbol;
 	isConsonant = false;
 	isVolve = false;
@@ -62,4 +62,31 @@ std::string Letter::getLetterRepr()
 	outLetter += "'";
 	outLetter += std::to_string(word);
 	return outLetter;
+}
+
+bool Letter::operator==(const Letter& letter) const
+{
+	if (this->origin != letter.origin)
+		return false;
+	if (this->technic != letter.technic)
+		return false;
+	if (this->printable != letter.printable)
+		return false;
+	if (this->isConsonant != letter.isConsonant)
+		return false;
+	if (this->isVolve != letter.isVolve)
+		return false;
+	if (this->syll != letter.syll)
+		return false;
+	if (this->pwr != letter.pwr)
+		return false;
+	if (this->number != letter.number)
+		return false;
+	if (this->word != letter.word)
+		return false;
+	if (this->pEnd != letter.pEnd)
+		return false;
+	if (this->accent != letter.accent)
+		return false;
+	return true;
 }
