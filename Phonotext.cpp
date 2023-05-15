@@ -10,11 +10,10 @@ Phonotext::Phonotext(std::string text)
 		return;
 
 	// Генерация односвязного списка букв
-	unsigned char b = text[0];
-	basetext.emplace_front(Letter(text.substr(0,1)));
+	basetext.emplace_front(Letter(" "));
 
 	std::forward_list<Letter>::iterator iter = basetext.begin();
-	for (int i = 1, l = 0; i < text.size(); i+=l)
+	for (int i = 0, l = 0; i < text.size(); i+=l)
 	{
 		for(l = 0; text[i] & (0x80 >> l); ++l); l = (l)?l:1; // find next letter
 		basetext.emplace_after(iter, Letter(text.substr(i, l)));
