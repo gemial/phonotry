@@ -20,33 +20,33 @@ using namespace std;
 
 double min_pwr, max_pwr;
 
-pair<bool, double> rusFilterComb(vector<int> indexes, vector<int> vol_pos, string txt /*positions*/)
-{
-    double pwr;
-    set<string> tmptxt(txt.begin(), txt.end());
-    if (tmptxt.size() < 3)
-        return make_pair(false, 0);
-    if (indexes[0] == vol_pos[0])
-        pwr = 2;
-    else if (indexes[2] == vol_pos[0])
-        pwr = 1;
-    else
-        pwr = 3;
-    int count = 0;
-    for (auto& i : txt)
-        if (i == ' ')
-            count++;
-    pwr += (indexes[2] - indexes[0] - count == 2 ? 5 : 0);
-    pwr += (count == 0 ? 2 : 0);
-    count = 0;
-    for (int i = txt.size() - 3; i < txt.size(); i++)
-        if (txt[i] == 'й') // ????????
-            count++;
-    pwr += (count == 0 ? 4 : 0);
-    // pwr += 1 if positions.find(b'\x01', -3) != -1 else 0
-    pwr /= 15;
-    return make_pair(min_pwr <= pwr <= max_pwr, pwr);
-}
+// pair<bool, double> rusFilterComb(vector<int> indexes, vector<int> vol_pos, string txt /*positions*/)
+// {
+//     double pwr;
+//     set<string> tmptxt(txt.begin(), txt.end());
+//     if (tmptxt.size() < 3)
+//         return make_pair(false, 0);
+//     if (indexes[0] == vol_pos[0])
+//         pwr = 2;
+//     else if (indexes[2] == vol_pos[0])
+//         pwr = 1;
+//     else
+//         pwr = 3;
+//     int count = 0;
+//     for (auto& i : txt)
+//         if (i == ' ')
+//             count++;
+//     pwr += (indexes[2] - indexes[0] - count == 2 ? 5 : 0);
+//     pwr += (count == 0 ? 2 : 0);
+//     count = 0;
+//     for (int i = txt.size() - 3; i < txt.size(); i++)
+//         if (txt[i] == 'й') // ????????
+//             count++;
+//     pwr += (count == 0 ? 4 : 0);
+//     // pwr += 1 if positions.find(b'\x01', -3) != -1 else 0
+//     pwr /= 15;
+//     return make_pair(min_pwr <= pwr <= max_pwr, pwr);
+// }
 
 double get_pwr(forward_list<Letter>::iterator a, forward_list<Letter>::iterator b)
 {
@@ -427,8 +427,8 @@ void sameProcessor(Phonotext *pt, std::map<std::string, std::string> asSame)
         if (symb.origin == " ")
             symb.technic = "-";
 
-        if (symb.technic == "&" || symb.technic == "|")
-            symb.printable = symb.technic;
+        // if (symb.technic == "&" || symb.technic == "|")
+            // symb.printable = symb.technic;
 
         if (symb.technic == "&")
             symb.technic = symb.origin;
@@ -448,7 +448,7 @@ void modifyProccessor(Phonotext *pt, std::map<std::string, std::map<std::string,
     {
         if (needChange)
         {
-            it->printable = "";
+            // it->printable = "`";
             needChange = false;
         }
         if (it == pt->basetext.begin())
@@ -472,11 +472,19 @@ void modifyProccessor(Phonotext *pt, std::map<std::string, std::map<std::string,
                     for(l = 0; tmp_c[i] & (0x80 >> l); ++l); l = (l)?l:1; // find second letter
 
                     itPreviosLetter->origin = tmp_c.substr(0, i);
-                    string tmp_str(tmp_c.substr(i, l));
-                    tmp_str += tmp_c.substr(i + l);
-                    it->technic = tmp_str;
-
+                    it->origin = tmp_c.substr(i, l);
+                    pt->basetext.emplace_after(it, Letter(tmp_c.substr(i + l)));
+                    auto b = it;
+                    (++b)->printable = it->printable;
+                    it->printable = "`";
                     needChange = true;
+
+                    // itPreviosLetter->origin = tmp_c.substr(0, i);
+                    // string tmp_str(tmp_c.substr(i, l));
+                    // tmp_str += tmp_c.substr(i + l);
+                    // it->technic = tmp_str;
+
+                    // needChange = true;
                 }
             }
         }
@@ -529,11 +537,16 @@ void print(Phonotext pt)
         cout << i << ": \"";
         for (auto it = pt.SP[i].first; it != pt.SP[i].second; it++)
         {
-           cout << it->origin;
+           cout << it->technic;
         }
         cout << "\"" << endl;
     }
     cout << endl;
+    for (auto& i : pt.basetext)
+    {
+            cout << i.origin << i.technic << i.printable << i.isVolve << i.isConsonant <<i.number << '|';
+    }
+
     std::cout << "-----------\n";
     std::cout << "combinations:\n";
     for (int i = 0; i < pt.syllableCombinations.size(); i++)
@@ -572,13 +585,11 @@ void print(Phonotext pt)
     }
     cout << endl;
     std::cout << "-----------\n";
+
 }
 
 void proccessor(Phonotext* pt, Conf CONFIG)
 {
-    std::cout << "\nnumber\n";
-    numberProccessor(pt, CONFIG.getWords(), CONFIG.getVolves(), CONFIG.getConsonants());
-    print(*pt);
 
     std::cout << "\nmodify\n";
     modifyProccessor(pt, CONFIG.getModifications());
@@ -590,6 +601,10 @@ void proccessor(Phonotext* pt, Conf CONFIG)
 
     std::cout << "\njoin\n";
     joinProccessor(pt, CONFIG.getAsOne());
+    print(*pt);
+
+    std::cout << "\nnumber\n";
+    numberProccessor(pt, CONFIG.getWords(), CONFIG.getVolves(), CONFIG.getConsonants());
     print(*pt);
 
     std::cout << "\nSP\n";
@@ -719,7 +734,7 @@ int main()
 
     Conf CONFIG("rus"); // Выбор языка
     std::cout << "start\n";
-    Phonotext pt("сегодня пришёл юнгатслтс");
+    Phonotext pt("всегодня пришёл юнгатслтс");
     print(pt);
 
     proccessor(&pt, CONFIG);
