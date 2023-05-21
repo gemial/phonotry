@@ -18,47 +18,32 @@ Conf::~Conf()
 {
 }
 
-//string utf8_to_string(const char* utf8str, const locale& loc)
-//{
-//    // UTF-8 to wstring
-//    wstring_convert<codecvt_utf8<wchar_t>> wconv;
-//    wstring wstr = wconv.from_bytes(utf8str);
-//    // wstring to string
-//    vector<char> buf(wstr.size());
-//    use_facet<ctype<wchar_t>>(loc).narrow(wstr.data(), wstr.data() + wstr.size(), '?', buf.data());
-//    return string(buf.data(), buf.size());
-//}
-
-
 void Conf::makeConfig(std::string lngPath)
 {
-    std::ifstream fin(lngPath); // Ïîäãðçêà ôàéëà json
-    nlohmann::json data = nlohmann::json::parse(fin); // Âûäåëåíèå json ôàéëà
+    std::ifstream fin(lngPath); // Подгрзка файла json
+    nlohmann::json data = nlohmann::json::parse(fin); // Выделение json файла
 
-    makeAlphabetConfig(data["alphabet"]); // Ïðåîáðàçîâàíèÿ àëôàâèòà èç ñòðîêîâîãî òèïà â ìàññèâ áóêâ
+    makeAlphabetConfig(data["alphabet"]); // Преобразования алфавита из строкового типа в массив букв
 
-    //string d = data["alphabet"];
-    //d = utf8_to_string(d.c_str(), locale(".1252"));
+    consonants = data["consonants"]; // Выборка символов из consonants
 
-    consonants = data["consonants"]; // Âûáîðêà ñèìâîëîâ èç consonants
+    volves = data["volves"]; // Выборка символов из volves
 
-    volves = data["volves"]; // Âûáîðêà ñèìâîëîâ èç volves
-
-    // Ñîåäèíåíèå consonants è volves â îäèí ìàññèâ
+    // Соединение consonants и volves в один массив
     for (auto& i : consonants)
         words.push_back(i);
     for (auto& i : volves)
         words.push_back(i);
 
-    // Ñîçäàíèå ñëîâàðÿ: Áóêâà ñ êîòîðîé íà÷èíàåòñÿ êîìáèíàöèÿ áóêâ - Ñî÷åòàíèå ñèìâîëîâ (áóêâ)
+    // Создание словаря: Буква с которой начинается комбинация букв - Сочетание символов (букв)
     std::vector<std::string> jAsOne;
     for (auto& i : data["as_one"])
         jAsOne.push_back(i);
     makeAsOneConfig(jAsOne);
 
-    makeAsSameConfig(data["as_same"], data["alphabet"]); // Ñîçäàíèå ñëîâàðÿ: Óíèêàëüíûé ñèìâîë - Êàê ñèìâîë ñëûøèòñÿ ( {'a':'a', 'p':'b', 'ph':'f'} )
+    makeAsSameConfig(data["as_same"], data["alphabet"]); // Создание словаря: Уникальный символ - Как символ слышится ( {'a':'a', 'p':'b', 'ph':'f'} )
 
-    // Ñîçäàíèÿ ñëîâàðÿ: (Ïåðâàÿ áóêâà - (âòîðàÿ áóêâà - çíà÷åíèå))
+    // Создания словаря: (Первая буква - (вторая буква - значение))
     std::map<std::string, std::string> jDictionary;
     for (nlohmann::json::iterator it = data["modifications"].begin(); it != data["modifications"].end(); it++)
         jDictionary.emplace(it.key(), it.value());
@@ -86,20 +71,20 @@ void Conf::makeAsOneConfig(std::vector<std::string> jAsOne)
 
 void Conf::makeAsSameConfig(std::vector<std::vector<std::string>> jAsSame, std::string jAlphabet)
 {
-    for (int i = 0; i < jAlphabet.size(); i++) // Äîáàâëåíèå âñåõ áóêâ àëôàâèòà â ñëîâàðü: Áóêâà - Áóêâà
+    for (int i = 0; i < jAlphabet.size(); i++) // Добавление всех букв алфавита в словарь: Буква - Буква
     {
         std::string tempStr(1, jAlphabet[i]);
         asSame.emplace(tempStr, tempStr);
     }
-    for (int i = 0; i < jAsSame.size(); i++) // Äîáàâëåíèå íåäîñòàþùèõ ñèìâîëîâ è ñî÷åòàíèé áóêâ, çàìåíà çíà÷åíèé ñëîâàðÿ íà "êàê ñëûøèòñÿ"
+    for (int i = 0; i < jAsSame.size(); i++) // Добавление недостающих символов и сочетаний букв, замена значений словаря на "как слышится"
     {
         for (auto& j : jAsSame[i])
         {
-            // Äîáàâëåíèå óíèêàëüíûõ ñèâîëîâ è ñî÷åòàíèé áóêâ
+            // Добавление уникальных сиволов и сочетаний букв
             if (asSame.find(j) == asSame.end())
                 asSame.emplace(j, j);
 
-            // Ïîèñê è çàìåíà çíà÷åíèé ñëîâàðÿ íà "êàê ñëûøèòñÿ"
+            // Поиск и замена значений словаря на "как слышится"
             std::map<std::string, std::string> ::iterator it = asSame.find(j);
             it->second = jAsSame[i][0];
         }
@@ -114,16 +99,40 @@ void Conf::makeModificationsConfig(std::map<std::string, std::string> jDictionar
         for(l = 0; i.first[0] & (0x80 >> l); ++l); l = (l)?l:1; 
         // i.first.substr(0,l) -> first letter; i.first.substr(l) -> second letter
 
-        if (modifications.find(i.first.substr(0, l)) == modifications.end()) // Äîáàâëåíèå â ñëîâàðü, åñëè ïåðâàÿ áóêâà îòñóòñòâóåò
+        if (modifications.find(i.first.substr(0, l)) == modifications.end()) // Добавление в словарь, если первая буква отсутствует
         {
             std::map<std::string, std::string> tmp;
             tmp.emplace(i.first.substr(l), i.second);
             modifications.emplace(i.first.substr(0, l), tmp);
         }
-        else // Äîáàâëåíèå â ïîäñëîâàðü, åñëè ïåðâàÿ áóêâà ïðèñóòñòâóåò
+        else // Добавление в подсловарь, если первая буква присутствует
         {
             std::map<std::string, std::map<std::string, std::string>> ::iterator it = modifications.find(i.first.substr(0, l));
             it->second.emplace(i.first.substr(l), i.second);
         }
     }
 }
+
+Conf Conf::operator=(Conf& CONFIG)
+{
+    this->modifications = CONFIG.modifications;
+    this->asOne = CONFIG.asOne;
+    this->consonants = CONFIG.consonants;
+    this->volves = CONFIG.volves;
+    this->words = CONFIG.words;
+    this->asSame = CONFIG.asSame;
+    this->alphabet = CONFIG.alphabet;
+
+    return *this;
+}
+
+//void Conf::notOperator(Conf* CONFIG)
+//{
+//    CONFIG->modifications = this->modifications;
+//    CONFIG->asOne = this->asOne;
+//    CONFIG->consonants = this->consonants;
+//    CONFIG->volves = this->volves;
+//    CONFIG->words = this->words;
+//    CONFIG->asSame = this->asSame;
+//    CONFIG->alphabet = this->alphabet;
+//}

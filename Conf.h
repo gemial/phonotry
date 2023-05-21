@@ -21,6 +21,9 @@ public:
     std::vector<std::string> getVolves() { return volves; }
     std::vector<std::string> getConsonants() { return consonants; }
 
+    Conf operator=(Conf& CONFIG);
+    //void notOperator(Conf* CONFIG);
+
 private:
     std::map<std::string, std::map<std::string, std::string>> modifications;
     std::map<char, std::string> asOne;

@@ -23,7 +23,7 @@ public:
 	int pEnd; // Последняя буква в строке
 	bool accent;
 
-	// w_pos номер буквы в слове
+	int w_pos; //номер буквы в слове
 
 	std::string getLetter();
 	std::string getLetterRepr();

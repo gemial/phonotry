@@ -13,10 +13,9 @@
 struct Repeat
 {
 	int count;
-	//std::vector<std::forward_list<Letter>::iterator> power; ?????
-	//pair<> repeatPower;
+	double power;
 	std::vector<Letter> letters;
-	std::vector<std::vector<std::vector<std::forward_list<Letter>::iterator>>> combs;
+	std::vector<std::vector<std::forward_list<Letter>::iterator>> combs;
 	std::set<std::string> _words;
 };
 

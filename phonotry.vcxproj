@@ -134,11 +134,13 @@
     <ClCompile Include="Letter.cpp" />
     <ClCompile Include="Phonotext.cpp" />
     <ClCompile Include="phonotry.cpp" />
+    <ClCompile Include="Proccessing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conf.h" />
     <ClInclude Include="Letter.h" />
     <ClInclude Include="Phonotext.h" />
+    <ClInclude Include="Proccessing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
