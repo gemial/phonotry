@@ -8,7 +8,7 @@ int main()
     std::cout << "start\n";
     Phonotext pt("всегодня пришёл юнгатслтс");
 
-    Proccessing proc(pt, "rus", 0, 100);
+    Proccessing proc(pt, "rus", 0., 100.);
     pt = proc.getResult();
     proc.print();
 

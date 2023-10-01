@@ -9,7 +9,7 @@ Proccessing::Proccessing(Phonotext pt, std::string lng, double min_pwr, double m
 
     std::cout << "Add config\n";
     Conf CONF(lng);
-    //this->CONFIG = CONF;
+    this->CONFIG = CONF;
     std::cout << "Config added\n";
 
     proccess();
@@ -60,28 +60,22 @@ void Proccessing::modifyProccessor()
         if (it == pt.basetext.begin())
         {
             tmp_b = it->origin;
-            std::cout << tmp_b << std::endl;
         }
         else
         {
             tmp_a = tmp_b;
             tmp_b = it->origin;
 
-
-            std::cout << "Modify config start\n";
-            auto modFirstKey = CONFIG.getModifications().find(tmp_a);
-            std::cout << "Modify config end\n";
-            if (modFirstKey != CONFIG.getModifications().end())
+            auto modFirstKey = CONFIG.getModifications()->find(tmp_a);
+            auto modFirstKeyEnd = CONFIG.getModifications()->end();
+            if (modFirstKey != modFirstKeyEnd)
             {
-                std::cout << "is here\n";
                 int i, l;
                 auto modSecondKey = modFirstKey->second.find(tmp_b);
-                if (modSecondKey != modFirstKey->second.end())
+                auto modSecondKeyEnd = modFirstKey->second.end();
+                if (modSecondKey != modSecondKeyEnd)
                 {
-
-                    std::cout << "config start using\n";
                     tmp_c = modSecondKey->second;
-                    std::cout << "config end using\n";
                     for (i = 0; tmp_c[0] & (0x80 >> i); ++i); i = (i) ? i : 1; // find first letter
                     for (l = 0; tmp_c[i] & (0x80 >> l); ++l); l = (l) ? l : 1; // find second letter
 
@@ -93,9 +87,8 @@ void Proccessing::modifyProccessor()
                     it->printable = "`";
                     needChange = true;
                 }
-            }
 
-            std::cout << "haven't if\n";
+            }
         }
         itPreviosLetter = it;
     }
@@ -108,9 +101,11 @@ void Proccessing::sameProccessor()
 {
     for (auto& symb : pt.basetext)
     {
-        auto it = CONFIG.getAsSame().find(symb.printable);
-        if (it != CONFIG.getAsSame().end())
-            symb.technic = it->second;
+        std::map<std::string, std::string> asSame = CONFIG.getAsSame();
+        auto sameKey = asSame.find(symb.printable);
+        auto sameKeyEnd = asSame.end();
+        if (sameKey != sameKeyEnd)
+            symb.technic = sameKey->second;
         else if (symb.technic == "+")
             symb.technic = "&";
 
@@ -148,15 +143,17 @@ void Proccessing::joinProccessor()
             tmp_a = itPreviosLetter->origin; // Запись первого символа (origin из предыдущего итератора)
             tmp_b = it->origin; // Запись второго символа (origin из настоящего символа)
 
-            auto sameKey = CONFIG.getAsOne().find(tmp_a[0]); // Поиск комбинации по первому символу
-            if (sameKey != CONFIG.getAsOne().end()) // Если комбинация найдена
+            std::map<char, std::string> asOne = CONFIG.getAsOne();
+            auto oneKey = asOne.find(tmp_a[0]); // Поиск комбинации по первому символу
+            auto oneKeyEnd = asOne.end();
+            if (oneKey != oneKeyEnd) // Если комбинация найдена
             {
-                if ((tmp_a + tmp_b) == sameKey->second) // Если наша пара совпадает с комбинацией
+                if ((tmp_a + tmp_b) == oneKey->second) // Если наша пара совпадает с комбинацией
                 {
                     // Перезапись прошлого итератора
-                    itPreviosLetter->origin = sameKey->second;
-                    itPreviosLetter->printable = sameKey->second;
-                    itPreviosLetter->technic = sameKey->second;
+                    itPreviosLetter->origin = oneKey->second;
+                    itPreviosLetter->printable = oneKey->second;
+                    itPreviosLetter->technic = oneKey->second;
                     if (it == itLast) // Если это последний элемент, то удаление и выход
                     {
                         pt.basetext.erase_after(itPreviosLetter);
