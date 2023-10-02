@@ -6,7 +6,14 @@ int main()
     system("chcp 65001");
 
     std::cout << "start\n";
-    Phonotext pt("всегодня пришёл юнгатслтс");
+    std::string data;
+    std::getline(std::cin, data);
+    std::string line;
+    while (std::getline(std::cin, line))
+    {
+        data += "\n" + line; 
+    }
+    Phonotext pt(data);
 
     Proccessing proc(pt, "rus", 0., 100.);
     pt = proc.getResult();
