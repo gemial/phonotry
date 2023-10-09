@@ -4,7 +4,10 @@
 #include <vector>
 #include <forward_list>
 #include <set>
+#include <fstream>
+#include <algorithm>
 
+#include <nlohmann/json.hpp>
 #include "Conf.h"
 #include "Letter.h"
 #include "Phonotext.h"
@@ -22,6 +25,7 @@ private:
 	Conf CONFIG;
 	double min_pwr = 0;
 	double max_pwr = 0;
+	std::vector<nlohmann::json> outJson;
 	
 	std::vector<std::forward_list<Letter>::iterator> volveIterators;
 
@@ -37,5 +41,6 @@ private:
 	void combinationsProccessor(int N = 2);
 	void repeatProccessor();
 	std::pair<bool, double> rusFilterComb(std::vector<std::forward_list<Letter>::iterator> comb, std::vector<std::string> words);
+	void createJson();
 };
 

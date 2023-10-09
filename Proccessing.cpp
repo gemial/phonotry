@@ -1,4 +1,4 @@
-#include "Proccessing.h"
+п»ї#include "Proccessing.h"
 
 Proccessing::Proccessing(Phonotext pt, std::string lng, double min_pwr, double max_pwr)
 {
@@ -15,32 +15,34 @@ Proccessing::Proccessing(Phonotext pt, std::string lng, double min_pwr, double m
     proccess();
 }
 
-// Полная обработка текста
+// ГЏГ®Г«Г­Г Гї Г®ГЎГ°Г ГЎГ®ГІГЄГ  ГІГҐГЄГ±ГІГ 
 void Proccessing::proccess()
 {
 
     std::cout << "modify\n";
-    modifyProccessor(); // Замена
+    modifyProccessor(); // Г‡Г Г¬ГҐГ­Г 
     std::cout << "same\n";
-    sameProccessor(); // Замена и запись
+    sameProccessor(); // Г‡Г Г¬ГҐГ­Г  ГЁ Г§Г ГЇГЁГ±Гј
     std::cout << "join\n";
-    joinProccessor(); // Объединение
+    joinProccessor(); // ГЋГЎГєГҐГ¤ГЁГ­ГҐГ­ГЁГҐ
     std::cout << "number\n";
-    numberProccessor(); // Подсчёт
+    numberProccessor(); // ГЏГ®Г¤Г±Г·ВёГІ
     std::cout << "finder\n";
-    finderVolve(); // Поиск
+    finderVolve(); // ГЏГ®ГЁГ±ГЄ
     std::cout << "SP\n";
-    SPmaxProccessor(); // Выборка
+    SPmaxProccessor(); // Г‚Г»ГЎГ®Г°ГЄГ 
     std::cout << "combinations\n";
-    combinationsProccessor(); // Комбинирование
+    combinationsProccessor(); // ГЉГ®Г¬ГЎГЁГ­ГЁГ°Г®ГўГ Г­ГЁГҐ
     std::cout << "repeat\n";
-    repeatProccessor(); // Подсчёт
+    repeatProccessor(); // ГЏГ®Г¤Г±Г·ВёГІ
     std::cout << "proccessing end\n";
+    createJson();
+    std::cout << "creating end\n";
 }
 
 
-// Изменение символов по json
-// Если изменять, то только напрямую с преподавателем
+// Г€Г§Г¬ГҐГ­ГҐГ­ГЁГҐ Г±ГЁГ¬ГўГ®Г«Г®Гў ГЇГ® json
+// Г…Г±Г«ГЁ ГЁГ§Г¬ГҐГ­ГїГІГј, ГІГ® ГІГ®Г«ГјГЄГ® Г­Г ГЇГ°ГїГ¬ГіГѕ Г± ГЇГ°ГҐГЇГ®Г¤Г ГўГ ГІГҐГ«ГҐГ¬
 void Proccessing::modifyProccessor()
 {
     std::string tmp_a;
@@ -95,8 +97,8 @@ void Proccessing::modifyProccessor()
 }
 
 
-// Запись technic и printable, а так же замена символов в первом, если они являются одинаковыми по json
-// P.S. стоит вопрос по переписи
+// Г‡Г ГЇГЁГ±Гј technic ГЁ printable, Г  ГІГ ГЄ Г¦ГҐ Г§Г Г¬ГҐГ­Г  Г±ГЁГ¬ГўГ®Г«Г®Гў Гў ГЇГҐГ°ГўГ®Г¬, ГҐГ±Г«ГЁ Г®Г­ГЁ ГїГўГ«ГїГѕГІГ±Гї Г®Г¤ГЁГ­Г ГЄГ®ГўГ»Г¬ГЁ ГЇГ® json
+// P.S. Г±ГІГ®ГЁГІ ГўГ®ГЇГ°Г®Г± ГЇГ® ГЇГҐГ°ГҐГЇГЁГ±ГЁ
 void Proccessing::sameProccessor()
 {
     for (auto& symb : pt.basetext)
@@ -120,67 +122,67 @@ void Proccessing::sameProccessor()
     }
 }
 
-// Объединение объектов, если они являются одним символом
+// ГЋГЎГєГҐГ¤ГЁГ­ГҐГ­ГЁГҐ Г®ГЎГєГҐГЄГІГ®Гў, ГҐГ±Г«ГЁ Г®Г­ГЁ ГїГўГ«ГїГѕГІГ±Гї Г®Г¤Г­ГЁГ¬ Г±ГЁГ¬ГўГ®Г«Г®Г¬
 void Proccessing::joinProccessor()
 {
-    std::string tmp_a; // Первый символ совмещающейся в комбинации
-    std::string tmp_b; // Второй символ совмещающейся в комбинации
+    std::string tmp_a; // ГЏГҐГ°ГўГ»Г© Г±ГЁГ¬ГўГ®Г« Г±Г®ГўГ¬ГҐГ№Г ГѕГ№ГҐГ©Г±Гї Гў ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
+    std::string tmp_b; // Г‚ГІГ®Г°Г®Г© Г±ГЁГ¬ГўГ®Г« Г±Г®ГўГ¬ГҐГ№Г ГѕГ№ГҐГ©Г±Гї Гў ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
 
-    // Поиск итератора на последний объект в Phonotext
+    // ГЏГ®ГЁГ±ГЄ ГЁГІГҐГ°Г ГІГ®Г°Г  Г­Г  ГЇГ®Г±Г«ГҐГ¤Г­ГЁГ© Г®ГЎГєГҐГЄГІ Гў Phonotext
     auto itLast = pt.basetext.begin();
     for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++)
         itLast = it;
 
-    auto it = pt.basetext.begin(); // Данная переменная будет итератором на объект, с которым происходит работа в данный момент
-    auto itPreviosLetter = pt.basetext.begin(); // Данная переменная будет указателем на объект, с которым происходила работа в прошлый раз
+    auto it = pt.basetext.begin(); // Г„Г Г­Г­Г Гї ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г Гї ГЎГіГ¤ГҐГІ ГЁГІГҐГ°Г ГІГ®Г°Г®Г¬ Г­Г  Г®ГЎГєГҐГЄГІ, Г± ГЄГ®ГІГ®Г°Г»Г¬ ГЇГ°Г®ГЁГ±ГµГ®Г¤ГЁГІ Г°Г ГЎГ®ГІГ  Гў Г¤Г Г­Г­Г»Г© Г¬Г®Г¬ГҐГ­ГІ
+    auto itPreviosLetter = pt.basetext.begin(); // Г„Г Г­Г­Г Гї ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г Гї ГЎГіГ¤ГҐГІ ГіГЄГ Г§Г ГІГҐГ«ГҐГ¬ Г­Г  Г®ГЎГєГҐГЄГІ, Г± ГЄГ®ГІГ®Г°Г»Г¬ ГЇГ°Г®ГЁГ±ГµГ®Г¤ГЁГ«Г  Г°Г ГЎГ®ГІГ  Гў ГЇГ°Г®ГёГ«Г»Г© Г°Г Г§
 
-    while (it != pt.basetext.end()) // Проходка до конца
+    while (it != pt.basetext.end()) // ГЏГ°Г®ГµГ®Г¤ГЄГ  Г¤Г® ГЄГ®Г­Г¶Г 
     {
-        if (it == pt.basetext.begin()) // В первый раз указывается только первый символ ищущейся комбинации
+        if (it == pt.basetext.begin()) // Г‚ ГЇГҐГ°ГўГ»Г© Г°Г Г§ ГіГЄГ Г§Г»ГўГ ГҐГІГ±Гї ГІГ®Г«ГјГЄГ® ГЇГҐГ°ГўГ»Г© Г±ГЁГ¬ГўГ®Г« ГЁГ№ГіГ№ГҐГ©Г±Гї ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
             tmp_a = it->origin;
         else
         {
-            tmp_a = itPreviosLetter->origin; // Запись первого символа (origin из предыдущего итератора)
-            tmp_b = it->origin; // Запись второго символа (origin из настоящего символа)
+            tmp_a = itPreviosLetter->origin; // Г‡Г ГЇГЁГ±Гј ГЇГҐГ°ГўГ®ГЈГ® Г±ГЁГ¬ГўГ®Г«Г  (origin ГЁГ§ ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГҐГЈГ® ГЁГІГҐГ°Г ГІГ®Г°Г )
+            tmp_b = it->origin; // Г‡Г ГЇГЁГ±Гј ГўГІГ®Г°Г®ГЈГ® Г±ГЁГ¬ГўГ®Г«Г  (origin ГЁГ§ Г­Г Г±ГІГ®ГїГ№ГҐГЈГ® Г±ГЁГ¬ГўГ®Г«Г )
 
             std::map<char, std::string> asOne = CONFIG.getAsOne();
-            auto oneKey = asOne.find(tmp_a[0]); // Поиск комбинации по первому символу
+            auto oneKey = asOne.find(tmp_a[0]); // ГЏГ®ГЁГ±ГЄ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ ГЇГ® ГЇГҐГ°ГўГ®Г¬Гі Г±ГЁГ¬ГўГ®Г«Гі
             auto oneKeyEnd = asOne.end();
-            if (oneKey != oneKeyEnd) // Если комбинация найдена
+            if (oneKey != oneKeyEnd) // Г…Г±Г«ГЁ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї Г­Г Г©Г¤ГҐГ­Г 
             {
-                if ((tmp_a + tmp_b) == oneKey->second) // Если наша пара совпадает с комбинацией
+                if ((tmp_a + tmp_b) == oneKey->second) // Г…Г±Г«ГЁ Г­Г ГёГ  ГЇГ Г°Г  Г±Г®ГўГЇГ Г¤Г ГҐГІ Г± ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГҐГ©
                 {
-                    // Перезапись прошлого итератора
+                    // ГЏГҐГ°ГҐГ§Г ГЇГЁГ±Гј ГЇГ°Г®ГёГ«Г®ГЈГ® ГЁГІГҐГ°Г ГІГ®Г°Г 
                     itPreviosLetter->origin = oneKey->second;
                     itPreviosLetter->printable = oneKey->second;
                     itPreviosLetter->technic = oneKey->second;
-                    if (it == itLast) // Если это последний элемент, то удаление и выход
+                    if (it == itLast) // Г…Г±Г«ГЁ ГЅГІГ® ГЇГ®Г±Г«ГҐГ¤Г­ГЁГ© ГЅГ«ГҐГ¬ГҐГ­ГІ, ГІГ® ГіГ¤Г Г«ГҐГ­ГЁГҐ ГЁ ГўГ»ГµГ®Г¤
                     {
                         pt.basetext.erase_after(itPreviosLetter);
                         break;
                     }
-                    // Если это не последний элемент, то перескок на следующий итератор, во избежание ошибки и удаление настоящего символа
+                    // Г…Г±Г«ГЁ ГЅГІГ® Г­ГҐ ГЇГ®Г±Г«ГҐГ¤Г­ГЁГ© ГЅГ«ГҐГ¬ГҐГ­ГІ, ГІГ® ГЇГҐГ°ГҐГ±ГЄГ®ГЄ Г­Г  Г±Г«ГҐГ¤ГіГѕГ№ГЁГ© ГЁГІГҐГ°Г ГІГ®Г°, ГўГ® ГЁГ§ГЎГҐГ¦Г Г­ГЁГҐ Г®ГёГЁГЎГЄГЁ ГЁ ГіГ¤Г Г«ГҐГ­ГЁГҐ Г­Г Г±ГІГ®ГїГ№ГҐГЈГ® Г±ГЁГ¬ГўГ®Г«Г 
                     it++;
                     pt.basetext.erase_after(itPreviosLetter);
                 }
             }
-            itPreviosLetter = it; // Смена прошлого итератора на настоящий
+            itPreviosLetter = it; // Г‘Г¬ГҐГ­Г  ГЇГ°Г®ГёГ«Г®ГЈГ® ГЁГІГҐГ°Г ГІГ®Г°Г  Г­Г  Г­Г Г±ГІГ®ГїГ№ГЁГ©
         }
-        it++; // Следующий итератор
+        it++; // Г‘Г«ГҐГ¤ГіГѕГ№ГЁГ© ГЁГІГҐГ°Г ГІГ®Г°
     }
 }
 
-// Функция для подсчёта различной информации по тексту
+// Г”ГіГ­ГЄГ¶ГЁГї Г¤Г«Гї ГЇГ®Г¤Г±Г·ВёГІГ  Г°Г Г§Г«ГЁГ·Г­Г®Г© ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГЁ ГЇГ® ГІГҐГЄГ±ГІГі
 void Proccessing::numberProccessor()
 {
-    int i = 0; // Для подсчёта номера буквы в тексте
-    int j = 1; // Для подсчёта слога в тексте
-    int k = 1; // Для подсчёта слова в тексте
-    int num = 1; // Не используется, но в оригинале было
-    bool space = false; // Несёт информацию, является ли данный итерируемый объект пробелом
-    int space_pos = 0; // Для подсчёта нахождения объекта в слове после пробела
+    int i = 0; // Г„Г«Гї ГЇГ®Г¤Г±Г·ВёГІГ  Г­Г®Г¬ГҐГ°Г  ГЎГіГЄГўГ» Гў ГІГҐГЄГ±ГІГҐ
+    int j = 1; // Г„Г«Гї ГЇГ®Г¤Г±Г·ВёГІГ  Г±Г«Г®ГЈГ  Гў ГІГҐГЄГ±ГІГҐ
+    int k = 1; // Г„Г«Гї ГЇГ®Г¤Г±Г·ВёГІГ  Г±Г«Г®ГўГ  Гў ГІГҐГЄГ±ГІГҐ
+    int num = 1; // ГЌГҐ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї, Г­Г® Гў Г®Г°ГЁГЈГЁГ­Г Г«ГҐ ГЎГ»Г«Г®
+    bool space = false; // ГЌГҐГ±ВёГІ ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГѕ, ГїГўГ«ГїГҐГІГ±Гї Г«ГЁ Г¤Г Г­Г­Г»Г© ГЁГІГҐГ°ГЁГ°ГіГҐГ¬Г»Г© Г®ГЎГєГҐГЄГІ ГЇГ°Г®ГЎГҐГ«Г®Г¬
+    int space_pos = 0; // Г„Г«Гї ГЇГ®Г¤Г±Г·ВёГІГ  Г­Г ГµГ®Г¦Г¤ГҐГ­ГЁГї Г®ГЎГєГҐГЄГІГ  Гў Г±Г«Г®ГўГҐ ГЇГ®Г±Г«ГҐ ГЇГ°Г®ГЎГҐГ«Г 
 
-    int l_number = 0; // Не используется, но в оригинале было
+    int l_number = 0; // ГЌГҐ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї, Г­Г® Гў Г®Г°ГЁГЈГЁГ­Г Г«ГҐ ГЎГ»Г«Г®
     for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++, l_number++)
     {
         it->number = i;
@@ -195,20 +197,20 @@ void Proccessing::numberProccessor()
         {
             std::vector<std::string> words = CONFIG.getWords();
             space_pos++;
-            // Для чего всё делается дальше не совсем помню, но по-факту это ничего не делает
+            // Г„Г«Гї Г·ГҐГЈГ® ГўГ±Вё Г¤ГҐГ«Г ГҐГІГ±Гї Г¤Г Г«ГјГёГҐ Г­ГҐ Г±Г®ГўГ±ГҐГ¬ ГЇГ®Г¬Г­Гѕ, Г­Г® ГЇГ®-ГґГ ГЄГІГі ГЅГІГ® Г­ГЁГ·ГҐГЈГ® Г­ГҐ Г¤ГҐГ«Г ГҐГІ
             bool flag = false;
             for (int t = 0; t < words.size(); t++)
                 if (it->technic == words[t])
                     flag = true;
             space = (space && flag);
-            // До этого момента
+            // Г„Г® ГЅГІГ®ГЈГ® Г¬Г®Г¬ГҐГ­ГІГ 
         }
         if (it->technic == "\n")
         {
-            // обработка
-            // P.S. хз почему я не рерайтнул обработку для этого, мб какая то проблема
+            // Г®ГЎГ°Г ГЎГ®ГІГЄГ 
+            // P.S. ГµГ§ ГЇГ®Г·ГҐГ¬Гі Гї Г­ГҐ Г°ГҐГ°Г Г©ГІГ­ГіГ« Г®ГЎГ°Г ГЎГ®ГІГЄГі Г¤Г«Гї ГЅГІГ®ГЈГ®, Г¬ГЎ ГЄГ ГЄГ Гї ГІГ® ГЇГ°Г®ГЎГ«ГҐГ¬Г 
         }
-        // Определение гласных объектов
+        // ГЋГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГҐ ГЈГ«Г Г±Г­Г»Гµ Г®ГЎГєГҐГЄГІГ®Гў
         std::vector<std::string> volves = CONFIG.getVolves();
         for (int t = 0; t < volves.size(); t++)
             if (it->printable == volves[t])
@@ -217,7 +219,7 @@ void Proccessing::numberProccessor()
                 j++;
                 break;
             }
-        // Определение согласных объектов
+        // ГЋГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГҐ Г±Г®ГЈГ«Г Г±Г­Г»Гµ Г®ГЎГєГҐГЄГІГ®Гў
         std::vector<std::string> consonants = CONFIG.getConsonants();
         for (int t = 0; t < consonants.size(); t++)
             if (it->printable == consonants[t])
@@ -228,11 +230,11 @@ void Proccessing::numberProccessor()
         it->syll = j;
         i++;
         num++;
-        it->w_pos = space_pos; // Возникала ощибка с этим, а именно, значения не сохранялись
+        it->w_pos = space_pos; // Г‚Г®Г§Г­ГЁГЄГ Г«Г  Г®Г№ГЁГЎГЄГ  Г± ГЅГІГЁГ¬, Г  ГЁГ¬ГҐГ­Г­Г®, Г§Г­Г Г·ГҐГ­ГЁГї Г­ГҐ Г±Г®ГµГ°Г Г­ГїГ«ГЁГ±Гј
     }
 }
 
-// Нахождение итераторов гласных и добавление возврат массива со всеми этими итераторами
+// ГЌГ ГµГ®Г¦Г¤ГҐГ­ГЁГҐ ГЁГІГҐГ°Г ГІГ®Г°Г®Гў ГЈГ«Г Г±Г­Г»Гµ ГЁ Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГўГ®Г§ГўГ°Г ГІ Г¬Г Г±Г±ГЁГўГ  Г±Г® ГўГ±ГҐГ¬ГЁ ГЅГІГЁГ¬ГЁ ГЁГІГҐГ°Г ГІГ®Г°Г Г¬ГЁ
 void Proccessing::finderVolve()
 {
     for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++)
@@ -240,50 +242,58 @@ void Proccessing::finderVolve()
             volveIterators.push_back(it);
 }
 
-// Создание массива элементов, которые представляют собой 
-// итераторы на следующюю согласную после прошлой гласой и последнюю согласную перед следующей гласной
+// Г‘Г®Г§Г¤Г Г­ГЁГҐ Г¬Г Г±Г±ГЁГўГ  ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў, ГЄГ®ГІГ®Г°Г»ГҐ ГЇГ°ГҐГ¤Г±ГІГ ГўГ«ГїГѕГІ Г±Г®ГЎГ®Г© 
+// ГЁГІГҐГ°Г ГІГ®Г°Г» Г­Г  Г±Г«ГҐГ¤ГіГѕГ№ГѕГѕ Г±Г®ГЈГ«Г Г±Г­ГіГѕ ГЇГ®Г±Г«ГҐ ГЇГ°Г®ГёГ«Г®Г© ГЈГ«Г Г±Г®Г© ГЁ ГЇГ®Г±Г«ГҐГ¤Г­ГѕГѕ Г±Г®ГЈГ«Г Г±Г­ГіГѕ ГЇГҐГ°ГҐГ¤ Г±Г«ГҐГ¤ГіГѕГ№ГҐГ© ГЈГ«Г Г±Г­Г®Г©
 void Proccessing::SPmaxProccessor()
 {
     std::vector<std::pair<std::forward_list<Letter>::iterator, std::forward_list<Letter>::iterator>> dividedVolveIterators;
 
-    std::forward_list<Letter>::iterator startVolveIt, middleVolveIt, endVolveIt; // итераторы на прошлую, настоящую и следующую гласную
+    std::forward_list<Letter>::iterator startVolveIt, middleVolveIt, endVolveIt; // ГЁГІГҐГ°Г ГІГ®Г°Г» Г­Г  ГЇГ°Г®ГёГ«ГіГѕ, Г­Г Г±ГІГ®ГїГ№ГіГѕ ГЁ Г±Г«ГҐГ¤ГіГѕГ№ГіГѕ ГЈГ«Г Г±Г­ГіГѕ
     bool firstVolve = false;
 
-    if (volveIterators.size() > 1) // если гласных больше одной
+    if (volveIterators.size() > 1) // ГҐГ±Г«ГЁ ГЈГ«Г Г±Г­Г»Гµ ГЎГ®Г«ГјГёГҐ Г®Г¤Г­Г®Г©
     {
-        // первоначальное расположение итератора в SP - второй символ, т.к. первый - пробел по умолчанию
+        // ГЇГҐГ°ГўГ®Г­Г Г·Г Г«ГјГ­Г®ГҐ Г°Г Г±ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ ГЁГІГҐГ°Г ГІГ®Г°Г  Гў SP - ГўГІГ®Г°Г®Г© Г±ГЁГ¬ГўГ®Г«, ГІ.ГЄ. ГЇГҐГ°ГўГ»Г© - ГЇГ°Г®ГЎГҐГ« ГЇГ® ГіГ¬Г®Г«Г·Г Г­ГЁГѕ
         startVolveIt = pt.basetext.begin();
         startVolveIt++;
-        // итератор на первый центр = итератор на первую гласную
+        // ГЁГІГҐГ°Г ГІГ®Г° Г­Г  ГЇГҐГ°ГўГ»Г© Г¶ГҐГ­ГІГ° = ГЁГІГҐГ°Г ГІГ®Г° Г­Г  ГЇГҐГ°ГўГіГѕ ГЈГ«Г Г±Г­ГіГѕ
         middleVolveIt = volveIterators[0];
 
-        for (int i = 1; i < volveIterators.size(); i++) // проход по всем итераторам гласных, начиная со второго
+        for (int i = 1; i < volveIterators.size(); i++) // ГЇГ°Г®ГµГ®Г¤ ГЇГ® ГўГ±ГҐГ¬ ГЁГІГҐГ°Г ГІГ®Г°Г Г¬ ГЈГ«Г Г±Г­Г»Гµ, Г­Г Г·ГЁГ­Г Гї Г±Г® ГўГІГ®Г°Г®ГЈГ®
         {
-            endVolveIt = volveIterators[i]; // конечный итератор элемента массива, указывающий на последнюю согласную перед следующей гласной
+            endVolveIt = volveIterators[i]; // ГЄГ®Г­ГҐГ·Г­Г»Г© ГЁГІГҐГ°Г ГІГ®Г° ГЅГ«ГҐГ¬ГҐГ­ГІГ  Г¬Г Г±Г±ГЁГўГ , ГіГЄГ Г§Г»ГўГ ГѕГ№ГЁГ© Г­Г  ГЇГ®Г±Г«ГҐГ¤Г­ГѕГѕ Г±Г®ГЈГ«Г Г±Г­ГіГѕ ГЇГҐГ°ГҐГ¤ Г±Г«ГҐГ¤ГіГѕГ№ГҐГ© ГЈГ«Г Г±Г­Г®Г©
 
-            dividedVolveIterators.push_back(std::make_pair(startVolveIt, endVolveIt)); // Создание пары на последнюю согласную после последней гласной и последней согласной перед следующей гласной
+            if (middleVolveIt->origin != "\n")
+                dividedVolveIterators.push_back(std::make_pair(startVolveIt, endVolveIt)); // Г‘Г®Г§Г¤Г Г­ГЁГҐ ГЇГ Г°Г» Г­Г  ГЇГ®Г±Г«ГҐГ¤Г­ГѕГѕ Г±Г®ГЈГ«Г Г±Г­ГіГѕ ГЇГ®Г±Г«ГҐ ГЇГ®Г±Г«ГҐГ¤Г­ГҐГ© ГЈГ«Г Г±Г­Г®Г© ГЁ ГЇГ®Г±Г«ГҐГ¤Г­ГҐГ© Г±Г®ГЈГ«Г Г±Г­Г®Г© ГЇГҐГ°ГҐГ¤ Г±Г«ГҐГ¤ГіГѕГ№ГҐГ© ГЈГ«Г Г±Г­Г®Г©
 
-            // следующее начало - следующая гласная после той, которая является центральной на данный момент
-            // следовательно смещаем и переназначаем
+            // Г±Г«ГҐГ¤ГіГѕГ№ГҐГҐ Г­Г Г·Г Г«Г® - Г±Г«ГҐГ¤ГіГѕГ№Г Гї ГЈГ«Г Г±Г­Г Гї ГЇГ®Г±Г«ГҐ ГІГ®Г©, ГЄГ®ГІГ®Г°Г Гї ГїГўГ«ГїГҐГІГ±Гї Г¶ГҐГ­ГІГ°Г Г«ГјГ­Г®Г© Г­Г  Г¤Г Г­Г­Г»Г© Г¬Г®Г¬ГҐГ­ГІ
+            // Г±Г«ГҐГ¤Г®ГўГ ГІГҐГ«ГјГ­Г® Г±Г¬ГҐГ№Г ГҐГ¬ ГЁ ГЇГҐГ°ГҐГ­Г Г§Г­Г Г·Г ГҐГ¬
             middleVolveIt++;
             startVolveIt = middleVolveIt;
-            // следующая центральная - та, которая являлась следующей на данном цикле
+            // Г±Г«ГҐГ¤ГіГѕГ№Г Гї Г¶ГҐГ­ГІГ°Г Г«ГјГ­Г Гї - ГІГ , ГЄГ®ГІГ®Г°Г Гї ГїГўГ«ГїГ«Г Г±Гј Г±Г«ГҐГ¤ГіГѕГ№ГҐГ© Г­Г  Г¤Г Г­Г­Г®Г¬ Г¶ГЁГЄГ«ГҐ
             middleVolveIt = endVolveIt;
-            // дальше идёт условие из оригинала на ударение
+            // Г¤Г Г«ГјГёГҐ ГЁГ¤ВёГІ ГіГ±Г«Г®ГўГЁГҐ ГЁГ§ Г®Г°ГЁГЈГЁГ­Г Г«Г  Г­Г  ГіГ¤Г Г°ГҐГ­ГЁГҐ
+
+            int counter = 0;
+            for (auto it = startVolveIt; it != endVolveIt; it++)
+                if (it->technic == "\n")
+                    counter++;
         }
 
-        // добавление элементе массива, который включает согласные после последней гласной
+        // Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГЅГ«ГҐГ¬ГҐГ­ГІГҐ Г¬Г Г±Г±ГЁГўГ , ГЄГ®ГІГ®Г°Г»Г© ГўГЄГ«ГѕГ·Г ГҐГІ Г±Г®ГЈГ«Г Г±Г­Г»ГҐ ГЇГ®Г±Г«ГҐ ГЇГ®Г±Г«ГҐГ¤Г­ГҐГ© ГЈГ«Г Г±Г­Г®Г©
         endVolveIt = pt.basetext.end();
         startVolveIt++;
-        dividedVolveIterators.push_back(std::make_pair(startVolveIt, endVolveIt));
+
+        if (middleVolveIt->origin != "\n")
+            dividedVolveIterators.push_back(std::make_pair(startVolveIt, endVolveIt));
     }
-    else // если гласная одна - элемент в массиве только один: весь Phonotext
+    else // ГҐГ±Г«ГЁ ГЈГ«Г Г±Г­Г Гї Г®Г¤Г­Г  - ГЅГ«ГҐГ¬ГҐГ­ГІ Гў Г¬Г Г±Г±ГЁГўГҐ ГІГ®Г«ГјГЄГ® Г®Г¤ГЁГ­: ГўГҐГ±Гј Phonotext
         dividedVolveIterators.push_back(std::make_pair(pt.basetext.begin(), pt.basetext.end()));
 
-    pt.SP = dividedVolveIterators; // перенос всех элементов в Phonotext
+    pt.SP = dividedVolveIterators; // ГЇГҐГ°ГҐГ­Г®Г± ГўГ±ГҐГµ ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў Гў Phonotext
 }
 
-// Нахождение индексов гласной и согласных
+// ГЌГ ГµГ®Г¦Г¤ГҐГ­ГЁГҐ ГЁГ­Г¤ГҐГЄГ±Г®Гў ГЈГ«Г Г±Г­Г®Г© ГЁ Г±Г®ГЈГ«Г Г±Г­Г»Гµ
 std::pair<int, std::vector<int>> Proccessing::findLocalWordsInds(std::pair<std::forward_list<Letter>::iterator, std::forward_list<Letter>::iterator> localSP)
 {
     int indVolve;
@@ -299,35 +309,35 @@ std::pair<int, std::vector<int>> Proccessing::findLocalWordsInds(std::pair<std::
     return std::make_pair(indVolve, indCons);
 }
 
-// Создание комбинаций
+// Г‘Г®Г§Г¤Г Г­ГЁГҐ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГ©
 void Proccessing::combinationsProccessor(int N)
 {
     N++;
     for (int i = 0; i < pt.SP.size(); i++)
     {
-        // Из каждого участка выбирается гласная и все согласные в отдельный массив
+        // Г€Г§ ГЄГ Г¦Г¤Г®ГЈГ® ГіГ·Г Г±ГІГЄГ  ГўГ»ГЎГЁГ°Г ГҐГІГ±Гї ГЈГ«Г Г±Г­Г Гї ГЁ ГўГ±ГҐ Г±Г®ГЈГ«Г Г±Г­Г»ГҐ Гў Г®ГІГ¤ГҐГ«ГјГ­Г»Г© Г¬Г Г±Г±ГЁГў
         std::pair<int, std::vector<int>> localInds = findLocalWordsInds(pt.SP[i]);
         int posVolve = localInds.first;
         std::vector<int> posCons = localInds.second;
 
-        // Всевозможные пары комбинаций из индексов массива согласных
+        // Г‚Г±ГҐГўГ®Г§Г¬Г®Г¦Г­Г»ГҐ ГЇГ Г°Г» ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГ© ГЁГ§ ГЁГ­Г¤ГҐГЄГ±Г®Гў Г¬Г Г±Г±ГЁГўГ  Г±Г®ГЈГ«Г Г±Г­Г»Гµ
         std::vector<std::pair<int, int>> consCombs;
         for (int j = 0; j < posCons.size(); j++)
             for (int k = j + 1; k < posCons.size(); k++)
                 consCombs.push_back(std::make_pair(posCons[j], posCons[k]));
 
-        // Сборка комбинаций из СГС в разных вариантах (в итераторах)
+        // Г‘ГЎГ®Г°ГЄГ  ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГ© ГЁГ§ Г‘ГѓГ‘ Гў Г°Г Г§Г­Г»Гµ ГўГ Г°ГЁГ Г­ГІГ Гµ (Гў ГЁГІГҐГ°Г ГІГ®Г°Г Гµ)
         std::vector<std::vector<std::forward_list<Letter>::iterator>> itCombs;
         for (int j = 0; j < consCombs.size(); j++)
         {
-            // Создание сортированных комбинаций из пар индексов соглассных + индекс гласной
+            // Г‘Г®Г§Г¤Г Г­ГЁГҐ Г±Г®Г°ГІГЁГ°Г®ГўГ Г­Г­Г»Гµ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГ© ГЁГ§ ГЇГ Г° ГЁГ­Г¤ГҐГЄГ±Г®Гў Г±Г®ГЈГ«Г Г±Г±Г­Г»Гµ + ГЁГ­Г¤ГҐГЄГ± ГЈГ«Г Г±Г­Г®Г©
             std::vector<int> combs;
             combs.push_back(consCombs[j].first);
             combs.push_back(consCombs[j].second);
             combs.push_back(posVolve);
             sort(combs.begin(), combs.end());
 
-            // Поиск итераторов элементов выбранных в пары
+            // ГЏГ®ГЁГ±ГЄ ГЁГІГҐГ°Г ГІГ®Г°Г®Гў ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў ГўГ»ГЎГ°Г Г­Г­Г»Гµ Гў ГЇГ Г°Г»
             std::forward_list<Letter>::iterator it1, it2, it3;
             it1 = it2 = it3 = pt.SP[i].first;
 
@@ -337,20 +347,46 @@ void Proccessing::combinationsProccessor(int N)
                 it2++;
             for (int k = 0; k < combs[2]; k++)
                 it3++;
+            
+            int counter = 0;
+            if (it1->origin == "\n")
+                counter++;
+            if (it2->origin == "\n")
+                counter++;
+            if (it3->origin == "\n")
+                counter++;
+            
+            bool isCorrect = true;
+            if (it1->origin == "\n" || it2->origin == "\n" || it3->origin == "\n")
+                isCorrect = false;
+            if (it1->origin == "-" || it2->origin == "-" || it3->origin == "-")
+                isCorrect = false;
+            if (it1->origin == "," || it2->origin == "," || it3->origin == ",")
+                isCorrect = false;
+            if (it1->origin == "!" || it2->origin == "!" || it3->origin == "!")
+                isCorrect = false;
+            if (it1->origin == "?" || it2->origin == "?" || it3->origin == "?")
+                isCorrect = false;
+            if (it1->origin == "j" || it2->origin == "j" || it3->origin == "j")
+                isCorrect = false;
 
-            std::vector<std::forward_list<Letter>::iterator> tmpItCombs;
-            tmpItCombs.push_back(it1);
-            tmpItCombs.push_back(it2);
-            tmpItCombs.push_back(it3);
-            itCombs.push_back(tmpItCombs);
+            if (isCorrect)
+            {
+                std::vector<std::forward_list<Letter>::iterator> tmpItCombs;
+                tmpItCombs.push_back(it1);
+                tmpItCombs.push_back(it2);
+                tmpItCombs.push_back(it3);
+                itCombs.push_back(tmpItCombs);
+            }
         }
-        pt.syllableCombinations.push_back(itCombs);
+        if (itCombs.size())
+            pt.syllableCombinations.push_back(itCombs);
 
-        // Добавить то, что вытаскивается из итераторов и обработку из filter_combination
+        // Г„Г®ГЎГ ГўГЁГІГј ГІГ®, Г·ГІГ® ГўГ»ГІГ Г±ГЄГЁГўГ ГҐГІГ±Гї ГЁГ§ ГЁГІГҐГ°Г ГІГ®Г°Г®Гў ГЁ Г®ГЎГ°Г ГЎГ®ГІГЄГі ГЁГ§ filter_combination
     }
 }
 
-// Функция, которая подсчитывает количество повторений комбинаций и их силы
+// Г”ГіГ­ГЄГ¶ГЁГї, ГЄГ®ГІГ®Г°Г Гї ГЇГ®Г¤Г±Г·ГЁГІГ»ГўГ ГҐГІ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ®ГўГІГ®Г°ГҐГ­ГЁГ© ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГ© ГЁ ГЁГµ Г±ГЁГ«Г»
 void Proccessing::repeatProccessor()
 {
     for (int n_syll = 0; n_syll < pt.syllableCombinations.size(); n_syll++)
@@ -359,36 +395,36 @@ void Proccessing::repeatProccessor()
         {
             std::pair<std::vector<std::string>, std::map<int, int>> a;
 
-            // Создание структуры Repeat, в которой распологаются комбинации и инфа о них (комбинации состоят из ГГ: гласная + гласная)
+            // Г‘Г®Г§Г¤Г Г­ГЁГҐ Г±ГІГ°ГіГЄГІГіГ°Г» Repeat, Гў ГЄГ®ГІГ®Г°Г®Г© Г°Г Г±ГЇГ®Г«Г®ГЈГ ГѕГІГ±Гї ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ ГЁ ГЁГ­ГґГ  Г® Г­ГЁГµ (ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ Г±Г®Г±ГІГ®ГїГІ ГЁГ§ ГѓГѓ: Г±Г®ГЈГ«Г Г±Г­Г Гї + Г±Г®ГЈГ«Г Г±Г­Г Гї)
             for (auto& i : comb)
             {
                 if (i->isConsonant)
                     a.first.push_back(i->technic);
-                a.second.insert(std::make_pair(i->number, n_syll)); // Добавление согласных из попадающихся в комбинации
+                a.second.insert(std::make_pair(i->number, n_syll)); // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г±Г®ГЈГ«Г Г±Г­Г»Гµ ГЁГ§ ГЇГ®ГЇГ Г¤Г ГѕГ№ГЁГµГ±Гї Гў ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
             }
 
-            // Удаление повторяющихся символов
+            // Г“Г¤Г Г«ГҐГ­ГЁГҐ ГЇГ®ГўГІГ®Г°ГїГѕГ№ГЁГµГ±Гї Г±ГЁГ¬ГўГ®Г«Г®Гў
             std::set<std::string> tmpWords(a.first.begin(), a.first.end());
             std::string setToStr = "";
             for (auto& i : tmpWords)
                 setToStr += i;
 
-            // Отбрасывание невалидных комбинаций
+            // ГЋГІГЎГ°Г Г±Г»ГўГ Г­ГЁГҐ Г­ГҐГўГ Г«ГЁГ¤Г­Г»Гµ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГ©
             std::pair<bool, double> filter = rusFilterComb(comb, CONFIG.getWords());
             if (filter.first)
             {
-                std::map<std::string, Repeat>::iterator it = pt.repeats.find(setToStr); // Проверка на присутствие данной комбинации в уже добавленных
-                if (it == pt.repeats.end()) // Создание структуры Repeat, если структуры с такой комбинации ещё небыло
+                std::map<std::string, Repeat>::iterator it = pt.repeats.find(setToStr); // ГЏГ°Г®ГўГҐГ°ГЄГ  Г­Г  ГЇГ°ГЁГ±ГіГІГ±ГІГўГЁГҐ Г¤Г Г­Г­Г®Г© ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ Гў ГіГ¦ГҐ Г¤Г®ГЎГ ГўГ«ГҐГ­Г­Г»Гµ
+                if (it == pt.repeats.end()) // Г‘Г®Г§Г¤Г Г­ГЁГҐ Г±ГІГ°ГіГЄГІГіГ°Г» Repeat, ГҐГ±Г«ГЁ Г±ГІГ°ГіГЄГІГіГ°Г» Г± ГІГ ГЄГ®Г© ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ ГҐГ№Вё Г­ГҐГЎГ»Г«Г®
                 {
                     Repeat tmpRepeat;
-                    tmpRepeat._words = tmpWords; // Уникальные символы структуры
-                    tmpRepeat.count = 1; // Структура только создаётся, следовательно это только первая добавленная
-                    tmpRepeat.power = filter.second; // Добавление силы первой добавленной комбинации
+                    tmpRepeat._words = tmpWords; // Г“Г­ГЁГЄГ Г«ГјГ­Г»ГҐ Г±ГЁГ¬ГўГ®Г«Г» Г±ГІГ°ГіГЄГІГіГ°Г»
+                    tmpRepeat.count = 1; // Г‘ГІГ°ГіГЄГІГіГ°Г  ГІГ®Г«ГјГЄГ® Г±Г®Г§Г¤Г ВёГІГ±Гї, Г±Г«ГҐГ¤Г®ГўГ ГІГҐГ«ГјГ­Г® ГЅГІГ® ГІГ®Г«ГјГЄГ® ГЇГҐГ°ГўГ Гї Г¤Г®ГЎГ ГўГ«ГҐГ­Г­Г Гї
+                    tmpRepeat.power = filter.second; // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г±ГЁГ«Г» ГЇГҐГ°ГўГ®Г© Г¤Г®ГЎГ ГўГ«ГҐГ­Г­Г®Г© ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
 
                     std::vector<Letter> tmpvector;
-                    for (auto& i : comb) // Добавление всех объектов класса Letter, которые присутствуют в комбинации во временный массив
+                    for (auto& i : comb) // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГўГ±ГҐГµ Г®ГЎГєГҐГЄГІГ®Гў ГЄГ«Г Г±Г±Г  Letter, ГЄГ®ГІГ®Г°Г»ГҐ ГЇГ°ГЁГ±ГіГІГ±ГІГўГіГѕГІ Гў ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ ГўГ® ГўГ°ГҐГ¬ГҐГ­Г­Г»Г© Г¬Г Г±Г±ГЁГў
                         tmpvector.push_back(*i);
-                    for (int i = 0; i < tmpvector.size(); i++) // Добавление уникальных объектов класса Letter из временного массива в структуру
+                    for (int i = 0; i < tmpvector.size(); i++) // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГіГ­ГЁГЄГ Г«ГјГ­Г»Гµ Г®ГЎГєГҐГЄГІГ®Гў ГЄГ«Г Г±Г±Г  Letter ГЁГ§ ГўГ°ГҐГ¬ГҐГ­Г­Г®ГЈГ® Г¬Г Г±Г±ГЁГўГ  Гў Г±ГІГ°ГіГЄГІГіГ°Гі
                     {
                         bool flag = false;
                         for (int j = 0; j < tmpRepeat.letters.size(); j++)
@@ -398,20 +434,21 @@ void Proccessing::repeatProccessor()
                             tmpRepeat.letters.push_back(tmpvector[i]);
                     }
 
-                    tmpRepeat.combs.push_back(comb); // Добавление всех комбинации в структуру
+                    tmpRepeat.combs.push_back(comb); // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГўГ±ГҐГµ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ Гў Г±ГІГ°ГіГЄГІГіГ°Гі
 
-                    pt.repeats.insert(std::make_pair(setToStr, tmpRepeat)); // Перенос структуры в объект Phonotext
+                    if (tmpRepeat._words.size() != 1)
+                        pt.repeats.insert(std::make_pair(setToStr, tmpRepeat)); // ГЏГҐГ°ГҐГ­Г®Г± Г±ГІГ°ГіГЄГІГіГ°Г» Гў Г®ГЎГєГҐГЄГІ Phonotext
                 }
                 else
                 {
-                    it->second._words = tmpWords; // Уникальные символы структуры
-                    it->second.count += 1; // Так как нашлась ещё одна комбинация, счётчик увеличивается
-                    it->second.power = filter.second; // Добавление силы следующей добавленной комбинации
+                    it->second._words = tmpWords; // Г“Г­ГЁГЄГ Г«ГјГ­Г»ГҐ Г±ГЁГ¬ГўГ®Г«Г» Г±ГІГ°ГіГЄГІГіГ°Г»
+                    it->second.count += 1; // Г’Г ГЄ ГЄГ ГЄ Г­Г ГёГ«Г Г±Гј ГҐГ№Вё Г®Г¤Г­Г  ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї, Г±Г·ВёГІГ·ГЁГЄ ГіГўГҐГ«ГЁГ·ГЁГўГ ГҐГІГ±Гї
+                    it->second.power = filter.second; // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г±ГЁГ«Г» Г±Г«ГҐГ¤ГіГѕГ№ГҐГ© Г¤Г®ГЎГ ГўГ«ГҐГ­Г­Г®Г© ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
 
-                    std::vector<Letter> tmpvector; // Уникальные символы структуры
+                    std::vector<Letter> tmpvector; // Г“Г­ГЁГЄГ Г«ГјГ­Г»ГҐ Г±ГЁГ¬ГўГ®Г«Г» Г±ГІГ°ГіГЄГІГіГ°Г»
                     for (auto& i : comb)
                         tmpvector.push_back(*i);
-                    for (int i = 0; i < tmpvector.size(); i++) // Добавление уникальных объектов класса Letter из временного массива в структуру
+                    for (int i = 0; i < tmpvector.size(); i++) // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГіГ­ГЁГЄГ Г«ГјГ­Г»Гµ Г®ГЎГєГҐГЄГІГ®Гў ГЄГ«Г Г±Г±Г  Letter ГЁГ§ ГўГ°ГҐГ¬ГҐГ­Г­Г®ГЈГ® Г¬Г Г±Г±ГЁГўГ  Гў Г±ГІГ°ГіГЄГІГіГ°Гі
                     {
                         bool flag = false;
                         for (int j = 0; j < it->second.letters.size(); j++)
@@ -421,24 +458,26 @@ void Proccessing::repeatProccessor()
                             it->second.letters.push_back(tmpvector[i]);
                     }
 
-                    it->second.combs.push_back(comb); // Добавление всех комбинации в структуру
+                    it->second.combs.push_back(comb); // Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГўГ±ГҐГµ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ Гў Г±ГІГ°ГіГЄГІГіГ°Гі
+
                 }
             }
         }
     }
+    pt.repeats.erase(pt.repeats.begin());
 }
 
-// Функция создана для фильтрации комбинаций, возвращает первым параметром <false, 0>, если комбинация является отбрасываемой,
-// возвращает <true, pwr>, если комбинация валидна, где pwr - сила комбинации в тексте
-// Доработать: сделать проверку на то, что текст, получаемый из комбинации являются двуконсонантным
+// Г”ГіГ­ГЄГ¶ГЁГї Г±Г®Г§Г¤Г Г­Г  Г¤Г«Гї ГґГЁГ«ГјГІГ°Г Г¶ГЁГЁ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГ©, ГўГ®Г§ГўГ°Г Г№Г ГҐГІ ГЇГҐГ°ГўГ»Г¬ ГЇГ Г°Г Г¬ГҐГІГ°Г®Г¬ <false, 0>, ГҐГ±Г«ГЁ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї ГїГўГ«ГїГҐГІГ±Гї Г®ГІГЎГ°Г Г±Г»ГўГ ГҐГ¬Г®Г©,
+// ГўГ®Г§ГўГ°Г Г№Г ГҐГІ <true, pwr>, ГҐГ±Г«ГЁ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї ГўГ Г«ГЁГ¤Г­Г , ГЈГ¤ГҐ pwr - Г±ГЁГ«Г  ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ Гў ГІГҐГЄГ±ГІГҐ
+// Г„Г®Г°Г ГЎГ®ГІГ ГІГј: Г±Г¤ГҐГ«Г ГІГј ГЇГ°Г®ГўГҐГ°ГЄГі Г­Г  ГІГ®, Г·ГІГ® ГІГҐГЄГ±ГІ, ГЇГ®Г«ГіГ·Г ГҐГ¬Г»Г© ГЁГ§ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ ГїГўГ«ГїГѕГІГ±Гї Г¤ГўГіГЄГ®Г­Г±Г®Г­Г Г­ГІГ­Г»Г¬
 std::pair<bool, double> Proccessing::rusFilterComb(std::vector<std::forward_list<Letter>::iterator> comb, std::vector<std::string> words)
 {
-    // Запись technic символов комбинации
+    // Г‡Г ГЇГЁГ±Гј technic Г±ГЁГ¬ГўГ®Г«Г®Гў ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
     std::string tmptxt = "";
     for (auto it = comb[0]; it != comb[2]; it++)
         tmptxt += it->technic;
 
-    // Отбрасывание повторяющихся символов
+    // ГЋГІГЎГ°Г Г±Г»ГўГ Г­ГЁГҐ ГЇГ®ГўГІГ®Г°ГїГѕГ№ГЁГµГ±Гї Г±ГЁГ¬ГўГ®Г«Г®Гў
     std::string txt = "";
     for (int i = 0; i < tmptxt.size(); i++)
     {
@@ -451,144 +490,211 @@ std::pair<bool, double> Proccessing::rusFilterComb(std::vector<std::forward_list
             txt += tmptxt[i];
     }
 
-    // Комбинация не валидна, если получаемый текст меньше трёх символов
+    // ГЉГ®Г¬ГЎГЁГ­Г Г¶ГЁГї Г­ГҐ ГўГ Г«ГЁГ¤Г­Г , ГҐГ±Г«ГЁ ГЇГ®Г«ГіГ·Г ГҐГ¬Г»Г© ГІГҐГЄГ±ГІ Г¬ГҐГ­ГјГёГҐ ГІГ°ВёГµ Г±ГЁГ¬ГўГ®Г«Г®Гў
     if (txt.size() < 3)
         return std::make_pair(false, 0);
 
-    // Подсчёт силы комбинации
+    // ГЏГ®Г¤Г±Г·ВёГІ Г±ГЁГ«Г» ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
     double pwr;
-    if (comb[0]->isVolve) // Если гласная первая в комбинации
+    if (comb[0]->isVolve) // Г…Г±Г«ГЁ ГЈГ«Г Г±Г­Г Гї ГЇГҐГ°ГўГ Гї Гў ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
         pwr = 2;
-    else if (comb[2]->isVolve) // Если гласная последняя в комбинации
+    else if (comb[2]->isVolve) // Г…Г±Г«ГЁ ГЈГ«Г Г±Г­Г Гї ГЇГ®Г±Г«ГҐГ¤Г­ГїГї Гў ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
         pwr = 1;
-    else // Если гласная в середине комбинации
+    else // Г…Г±Г«ГЁ ГЈГ«Г Г±Г­Г Гї Гў Г±ГҐГ°ГҐГ¤ГЁГ­ГҐ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ
         pwr = 3;
 
     int count = 0;
-    for (auto& i : txt) // Подсчёт количества пробелов
+    for (auto& i : txt) // ГЏГ®Г¤Г±Г·ВёГІ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ  ГЇГ°Г®ГЎГҐГ«Г®Гў
         if (i == '|')
             count++;
-    pwr += (comb[2]->number - comb[0]->number - count == 2 ? 5 : 0); // Расположение гласных без пробелов
-    pwr += (count == 0 ? 2 : 0); // количество пробелов
+    pwr += (comb[2]->number - comb[0]->number - count == 2 ? 5 : 0); // ГђГ Г±ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ ГЈГ«Г Г±Г­Г»Гµ ГЎГҐГ§ ГЇГ°Г®ГЎГҐГ«Г®Гў
+    pwr += (count == 0 ? 2 : 0); // ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ°Г®ГЎГҐГ«Г®Гў
     count = 0;
-    for (int i = txt.size() - 3; i < txt.size(); i++) // подсчёт количества букв "й" в последних трёх символах получаемого текста
-        if (txt[i] == 'й')
+    for (int i = txt.size() - 3; i < txt.size(); i++) // ГЇГ®Г¤Г±Г·ВёГІ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ  ГЎГіГЄГў "Г©" Гў ГЇГ®Г±Г«ГҐГ¤Г­ГЁГµ ГІГ°ВёГµ Г±ГЁГ¬ГўГ®Г«Г Гµ ГЇГ®Г«ГіГ·Г ГҐГ¬Г®ГЈГ® ГІГҐГЄГ±ГІГ 
+        if (txt[i] == 'Г©')
             count++;
     pwr += (count == 0 ? 4 : 0);
-    pwr += (!comb[0]->w_pos || !comb[1]->w_pos || !comb[2]->w_pos ? 1 : 0); // Проверка на то, является ли символы из комбинации первым в слове
+    pwr += (!comb[0]->w_pos || !comb[1]->w_pos || !comb[2]->w_pos ? 1 : 0); // ГЏГ°Г®ГўГҐГ°ГЄГ  Г­Г  ГІГ®, ГїГўГ«ГїГҐГІГ±Гї Г«ГЁ Г±ГЁГ¬ГўГ®Г«Г» ГЁГ§ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ ГЇГҐГ°ГўГ»Г¬ Гў Г±Г«Г®ГўГҐ
     pwr /= 15;
 
     return std::make_pair(min_pwr <= pwr <= max_pwr, pwr);
 }
 
-// Вывод
+// Г‚Г»ГўГ®Г¤
 void Proccessing::print()
 {
-    std::cout << "===========\n";
+    std::ofstream fout;
+    fout.open("out.txt");
+    fout << "===========\n";
 
-    std::cout << "-----------\n";
-    std::cout << "origin      : ";
+    fout << "-----------\n";
+    fout << "origin      : ";
     for (auto& i : pt.basetext)
     {
-        std::cout << i.origin;
+        fout << i.origin;
     }
-    std::cout << std::endl;
+    fout << std::endl;
 
-    std::cout << "-----------\n";
-    std::cout << "technic     : ";
+    fout << "-----------\n";
+    fout << "technic     : ";
     for (auto& i : pt.basetext)
     {
-        std::cout << i.technic;
+        fout << i.technic;
     }
-    std::cout << std::endl;
+    fout << std::endl;
 
-    std::cout << "-----------\n";
-    std::cout << "printable   : ";
+    fout << "-----------\n";
+    fout << "printable   : ";
     for (auto& i : pt.basetext)
     {
-        std::cout << i.printable;
+        fout << i.printable;
     }
-    std::cout << std::endl;
+    fout << std::endl;
 
-    std::cout << "-----------\n";
-    std::cout << "isWord      : ";
+    fout << "-----------\n";
+    fout << "isWord      : ";
     for (auto& i : pt.basetext)
     {
         if (i.isVolve)
-            std::cout << "v";
+            fout << "v";
         else if (i.isConsonant)
-            std::cout << "c";
+            fout << "c";
         else
-            std::cout << "n";
+            fout << "n";
     }
-    std::cout << std::endl;
+    fout << std::endl;
 
-    std::cout << "-----------\n";
-    std::cout << "w_pos      : ";
+    fout << "-----------\n";
+    fout << "w_pos      : ";
     for (auto& i : pt.basetext)
     {
-        std::cout << i.w_pos;
+        fout << i.w_pos;
     }
-    std::cout << std::endl;
+    fout << std::endl;
 
-    std::cout << "-----------\n";
-    std::cout << "SP          :\n";
+    fout << "-----------\n";
+    fout << "SP          :\n";
     for (int i = 0; i < pt.SP.size(); i++)
     {
-        std::cout << i << ": \"";
+        fout << i << ": \"";
         for (auto it = pt.SP[i].first; it != pt.SP[i].second; it++)
         {
-            std::cout << it->technic;
+            fout << it->technic;
         }
-        std::cout << "\"" << std::endl;
+        fout << "\"" << std::endl;
     }
-    std::cout << std::endl;
+    fout << std::endl;
     for (auto& i : pt.basetext)
     {
-        std::cout << i.origin << i.technic << i.printable << i.isVolve << i.isConsonant << i.number << '|';
+        fout << i.origin << i.technic << i.printable << i.isVolve << i.isConsonant << i.number << '|';
     }
 
-    std::cout << "-----------\n";
+    fout << "-----------\n";
 
-    std::cout << "combinations:\n";
+    fout << "combinations:\n";
     for (int i = 0; i < pt.syllableCombinations.size(); i++)
     {
-        std::cout << i << ":\n";
+        fout << i << ":\n";
         for (int j = 0; j < pt.syllableCombinations[i].size(); j++)
         {
             for (int k = 0; k < 3; k++)
-                std::cout << pt.syllableCombinations[i][j][k]->origin;
-            std::cout << std::endl;
+                fout << pt.syllableCombinations[i][j][k]->origin;
+            fout << std::endl;
         }
-        std::cout << std::endl;
+        fout << std::endl;
     }
-    std::cout << std::endl;
+    fout << std::endl;
 
-    std::cout << "-----------\n";
-    std::cout << "repeats:\n";
+    fout << "-----------\n";
+    fout << "repeats:\n";
     for (auto& i : pt.repeats)
     {
-        std::cout << "key : " << i.first << std::endl;
-        std::cout << "Repeat.power : " << i.second.power << std::endl;
-        std::cout << "Repeat.count : " << i.second.count << std::endl;
-        std::cout << "Repeat.letters : ";
+        fout << "key : " << i.first << std::endl;
+        fout << "Repeat.power : " << i.second.power << std::endl;
+        fout << "Repeat.count : " << i.second.count << std::endl;
+        fout << "Repeat.letters : ";
         for (int j = 0; j < i.second.letters.size(); j++)
-            std::cout << i.second.letters[j].origin;
-        std::cout << std::endl << "Repeat._words : <";
+            fout << i.second.letters[j].origin;
+        fout << std::endl << "Repeat._words : <";
         for (auto& j : i.second._words)
-            std::cout << j << "><";
-        std::cout << ">\n";
-        std::cout << "Repeat.combs : ";
+            fout << j << "><";
+        fout << ">\n";
+        fout << "Repeat.combs : ";
         for (int j = 0; j < i.second.combs.size(); j++)
         {
             for (int k = 0; k < i.second.combs[j].size(); k++)
-
-                std::cout << i.second.combs[j][k]->origin;
-            std::cout << " ";
+                fout << i.second.combs[j][k]->origin;
+            fout << " ";
         }
-        std::cout << std::endl << std::endl;
+        fout << std::endl << std::endl;
     }
-    std::cout << std::endl;
-    std::cout << "-----------\n";
+    fout << std::endl;
+    fout << "-----------\n";
+    fout.close();
+}
 
+void Proccessing::createJson()
+{
+    std::string printable = "";
+    for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++)
+        printable += it->printable;
+
+
+    std::string str = "{\n";
+    for (auto& i : pt.repeats)
+    {
+        std::string key = "";
+        std::string power = "";
+        std::string count = "";
+        std::string letters = ""; // СѓРґР°Р»РёС‚СЊ РїРѕРІС‚РѕСЂСЏСЋС‰РёРµСЃСЏ
+        std::string words = "";
+        std::vector<std::string> combs;
+
+        key = i.first;
+        power = std::to_string(i.second.power);
+        count = std::to_string(i.second.count);
+        for (int j = 0; j < i.second.letters.size(); j++)
+            letters += i.second.letters[j].origin;
+        for (auto& j : i.second._words)
+            words += j;
+        for (int j = 0; j < i.second.combs.size(); j++)
+        {
+            std::string tCombs = "";
+            for (int k = 0; k < i.second.combs[j].size(); k++)
+                tCombs += i.second.combs[j][k]->origin;
+            combs.push_back(tCombs);
+        }
+
+        nlohmann::json tmpOutJson = {
+            {"printable", printable},
+            {"repeat", {
+                {"key", key},
+                {"power", power},
+                {"count", count},
+                {"letters", letters},
+                {"words", words}
+            }}
+        };
+
+        str += "\t\"" + key + "\": {\n";
+        str += "\t\t\"key\": \"" + key + "\",\n";
+        str += "\t\t\"power\": \"" + power + "\",\n";
+        str += "\t\t\"count\": \"" + count + "\",\n";
+        str += "\t\t\"letters\": \"" + letters + "\",\n";
+        str += "\t\t\"words\": \"" + words + "\",\n";
+        str += "\t\t\"combs\": [";
+        for (int j = 0; j < combs.size(); j++)
+        {
+            str += "\"" + combs[j] + "\"" + (j + 1 < combs.size() ? ", " : "");
+        }
+        str += "]\n";
+        str += "\t},\n";
+        outJson.push_back(tmpOutJson);
+    }
+    str += "}\n";
+
+    std::ofstream fout;
+    fout.open("outJson.json");
+    fout << str;
+    fout.close();
 }
