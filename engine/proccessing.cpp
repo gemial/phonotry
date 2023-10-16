@@ -1,4 +1,4 @@
-﻿#include "proccessing.h"
+#include "proccessing.h"
 
 Proccessing::Proccessing(Phonotext pt, std::string lng, double min_pwr, double max_pwr)
 {
@@ -397,7 +397,7 @@ void Proccessing::repeatProccessor()
             {
                 if (i->isConsonant)
                     a.first.push_back(i->technic);
-                a.second.insert(std::make_pair(i->number, n_syll)); // Äîáàâëåíèå ñîãëàñíûõ èç ïîïàäàþùèõñÿ â êîìáèíàöèè
+                a.second.insert(std::make_pair(i->number, n_syll)); // Добавление согласных из попадающихся в комбинации
             }
 
             // Удаление повторяющихся символов
@@ -410,7 +410,7 @@ void Proccessing::repeatProccessor()
             std::pair<bool, double> filter = rusFilterComb(comb, CONFIG.getWords());
             if (filter.first)
             {
-                std::map<std::string, Repeat>::iterator it = pt.repeats.find(setToStr); // Ïðîâåðêà íà ïðèñóòñòâèå äàííîé êîìáèíàöèè â óæå äîáàâëåííûõ
+                std::map<std::string, Repeat>::iterator it = pt.repeats.find(setToStr); // Проверка на присутствие данной комбинации в уже добавленных
                 if (it == pt.repeats.end()) // Создание структуры Repeat, если структуры с такой комбинации ещё небыло
                 {
                     Repeat tmpRepeat;
