@@ -402,3 +402,6 @@ FodyWeavers.xsd
 build/
 
 json/
+data/*
+!data/in.txt
+.vscode

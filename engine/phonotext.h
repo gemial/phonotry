@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#include "Letter.h"
+#include "letter.h"
 
 struct Repeat
 {

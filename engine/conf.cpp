@@ -1,4 +1,4 @@
-#include "Conf.h"
+#include "conf.h"
 
 Conf::Conf()
 {
@@ -7,11 +7,11 @@ Conf::Conf()
 Conf::Conf(std::string lng)
 {
     if (lng == "rus")
-        makeConfig("./lng json/russian.json");
+        makeConfig("../lng json/russian.json");
     else if (lng == "eng")
-        makeConfig("./lng json/english.json");
+        makeConfig("../lng json/english.json");
     else if (lng == "lat")
-        makeConfig("./lng json/latin.json");
+        makeConfig("../lng json/latin.json");
 }
 
 Conf::~Conf()

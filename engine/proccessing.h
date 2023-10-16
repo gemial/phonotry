@@ -8,9 +8,9 @@
 #include <algorithm>
 
 #include <nlohmann/json.hpp>
-#include "Conf.h"
-#include "Letter.h"
-#include "Phonotext.h"
+#include "conf.h"
+#include "letter.h"
+#include "phonotext.h"
 
 class Proccessing
 {
@@ -18,7 +18,8 @@ public:
 	Proccessing(Phonotext pt, std::string lng, double min_pwr, double max_pwr);
 
 	Phonotext getResult() { return this->pt; }
-	void print();
+	void print(std::string);
+	void createJson(std::string);
 
 private:
 	Phonotext pt;
@@ -41,6 +42,5 @@ private:
 	void combinationsProccessor(int N = 2);
 	void repeatProccessor();
 	std::pair<bool, double> rusFilterComb(std::vector<std::forward_list<Letter>::iterator> comb, std::vector<std::string> words);
-	void createJson();
 };
 

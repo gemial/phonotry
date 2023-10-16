@@ -1,4 +1,4 @@
-#include "Phonotext.h"
+#include "phonotext.h"
 
 Phonotext::Phonotext()
 {
@@ -9,7 +9,7 @@ Phonotext::Phonotext(std::string text)
 	if (text == "")
 		return;
 
-	// Генерация односвязного списка букв
+	// Р“РµРЅРµСЂР°С†РёСЏ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР° Р±СѓРєРІ
 	basetext.emplace_front(Letter(" "));
 
 	std::forward_list<Letter>::iterator iter = basetext.begin();
@@ -33,7 +33,7 @@ std::pair<int, int> Phonotext::countLetters()
 	{
 		if (symb.isConsonant)
 			count.first++;
-		if (symb.isVolve && symb.printable != "\n" && symb.printable != "--endl") // Вернуться к вопросу хранения данных ("--endl")
+		if (symb.isVolve && symb.printable != "\n" && symb.printable != "--endl") // Р’РµСЂРЅСѓС‚СЊСЃСЏ Рє РІРѕРїСЂРѕСЃСѓ С…СЂР°РЅРµРЅРёСЏ РґР°РЅРЅС‹С… ("--endl")
 		{
 			count.second++;
 			count.first++;

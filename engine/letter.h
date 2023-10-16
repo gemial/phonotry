@@ -10,20 +10,20 @@ public:
 	~Letter();
 
 	// char to string
-	// Какие именно данные будут храниться в переменных
+	// РљР°РєРёРµ РёРјРµРЅРЅРѕ РґР°РЅРЅС‹Рµ Р±СѓРґСѓС‚ С…СЂР°РЅРёС‚СЊСЃСЏ РІ РїРµСЂРµРјРµРЅРЅС‹С…
 	std::string origin;
 	std::string technic;
 	std::string printable;
 	bool isConsonant;
 	bool isVolve;
-	int syll; // В каком слоге находится
+	int syll; // Р’ РєР°РєРѕРј СЃР»РѕРіРµ РЅР°С…РѕРґРёС‚СЃСЏ
 	int pwr; 
-	int number; // Номер по порядку в тексте
-	int word; // Номер слова
-	int pEnd; // Последняя буква в строке
+	int number; // РќРѕРјРµСЂ РїРѕ РїРѕСЂСЏРґРєСѓ РІ С‚РµРєСЃС‚Рµ
+	int word; // РќРѕРјРµСЂ СЃР»РѕРІР°
+	int pEnd; // РџРѕСЃР»РµРґРЅСЏСЏ Р±СѓРєРІР° РІ СЃС‚СЂРѕРєРµ
 	bool accent;
 
-	int w_pos; //номер буквы в слове
+	int w_pos; //РЅРѕРјРµСЂ Р±СѓРєРІС‹ РІ СЃР»РѕРІРµ
 
 	std::string getLetter();
 	std::string getLetterRepr();

@@ -1,4 +1,4 @@
-﻿#include "Proccessing.h"
+﻿#include "proccessing.h"
 
 Proccessing::Proccessing(Phonotext pt, std::string lng, double min_pwr, double max_pwr)
 {
@@ -12,37 +12,35 @@ Proccessing::Proccessing(Phonotext pt, std::string lng, double min_pwr, double m
     this->CONFIG = CONF;
     std::cout << "Config added\n";
 
-    proccess();
+    this->proccess();
 }
 
-// Ïîëíàÿ îáðàáîòêà òåêñòà
+// Полная обработка текста
 void Proccessing::proccess()
 {
 
     std::cout << "modify\n";
-    modifyProccessor(); // Çàìåíà
+    modifyProccessor(); // Замена
     std::cout << "same\n";
-    sameProccessor(); // Çàìåíà è çàïèñü
+    sameProccessor(); // Замена и запись
     std::cout << "join\n";
-    joinProccessor(); // Îáúåäèíåíèå
+    joinProccessor(); // Объединение
     std::cout << "number\n";
-    numberProccessor(); // Ïîäñ÷¸ò
+    numberProccessor(); // Подсчёт
     std::cout << "finder\n";
-    finderVolve(); // Ïîèñê
+    finderVolve(); // Поиск
     std::cout << "SP\n";
-    SPmaxProccessor(); // Âûáîðêà
+    SPmaxProccessor(); // Выборка
     std::cout << "combinations\n";
-    combinationsProccessor(); // Êîìáèíèðîâàíèå
+    combinationsProccessor(); // Комбинирование
     std::cout << "repeat\n";
-    repeatProccessor(); // Ïîäñ÷¸ò
+    repeatProccessor(); // Подсчёт
     std::cout << "proccessing end\n";
-    createJson();
-    std::cout << "creating end\n";
 }
 
 
-// Èçìåíåíèå ñèìâîëîâ ïî json
-// Åñëè èçìåíÿòü, òî òîëüêî íàïðÿìóþ ñ ïðåïîäàâàòåëåì
+// Изменение символов по json
+// Если изменять, то только напрямую с преподавателем
 void Proccessing::modifyProccessor()
 {
     std::string tmp_a;
@@ -97,8 +95,8 @@ void Proccessing::modifyProccessor()
 }
 
 
-// Çàïèñü technic è printable, à òàê æå çàìåíà ñèìâîëîâ â ïåðâîì, åñëè îíè ÿâëÿþòñÿ îäèíàêîâûìè ïî json
-// P.S. ñòîèò âîïðîñ ïî ïåðåïèñè
+// Запись technic и printable, а так же замена символов в первом, если они являются одинаковыми по json
+// P.S. стоит вопрос по переписи
 void Proccessing::sameProccessor()
 {
     for (auto& symb : pt.basetext)
@@ -122,67 +120,67 @@ void Proccessing::sameProccessor()
     }
 }
 
-// Îáúåäèíåíèå îáúåêòîâ, åñëè îíè ÿâëÿþòñÿ îäíèì ñèìâîëîì
+// Объединение объектов, если они являются одним символом
 void Proccessing::joinProccessor()
 {
-    std::string tmp_a; // Ïåðâûé ñèìâîë ñîâìåùàþùåéñÿ â êîìáèíàöèè
-    std::string tmp_b; // Âòîðîé ñèìâîë ñîâìåùàþùåéñÿ â êîìáèíàöèè
+    std::string tmp_a; // Первый символ совмещающейся в комбинации
+    std::string tmp_b; // Второй символ совмещающейся в комбинации
 
-    // Ïîèñê èòåðàòîðà íà ïîñëåäíèé îáúåêò â Phonotext
+    // Поиск итератора на последний объект в Phonotext
     auto itLast = pt.basetext.begin();
     for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++)
         itLast = it;
 
-    auto it = pt.basetext.begin(); // Äàííàÿ ïåðåìåííàÿ áóäåò èòåðàòîðîì íà îáúåêò, ñ êîòîðûì ïðîèñõîäèò ðàáîòà â äàííûé ìîìåíò
-    auto itPreviosLetter = pt.basetext.begin(); // Äàííàÿ ïåðåìåííàÿ áóäåò óêàçàòåëåì íà îáúåêò, ñ êîòîðûì ïðîèñõîäèëà ðàáîòà â ïðîøëûé ðàç
+    auto it = pt.basetext.begin(); // Данная переменная будет итератором на объект, с которым происходит работа в данный момент
+    auto itPreviosLetter = pt.basetext.begin(); // Данная переменная будет указателем на объект, с которым происходила работа в прошлый раз
 
-    while (it != pt.basetext.end()) // Ïðîõîäêà äî êîíöà
+    while (it != pt.basetext.end()) // Проходка до конца
     {
-        if (it == pt.basetext.begin()) // Â ïåðâûé ðàç óêàçûâàåòñÿ òîëüêî ïåðâûé ñèìâîë èùóùåéñÿ êîìáèíàöèè
+        if (it == pt.basetext.begin()) // В первый раз указывается только первый символ ищущейся комбинации
             tmp_a = it->origin;
         else
         {
-            tmp_a = itPreviosLetter->origin; // Çàïèñü ïåðâîãî ñèìâîëà (origin èç ïðåäûäóùåãî èòåðàòîðà)
-            tmp_b = it->origin; // Çàïèñü âòîðîãî ñèìâîëà (origin èç íàñòîÿùåãî ñèìâîëà)
+            tmp_a = itPreviosLetter->origin; // Запись первого символа (origin из предыдущего итератора)
+            tmp_b = it->origin; // Запись второго символа (origin из настоящего символа)
 
             std::map<char, std::string> asOne = CONFIG.getAsOne();
-            auto oneKey = asOne.find(tmp_a[0]); // Ïîèñê êîìáèíàöèè ïî ïåðâîìó ñèìâîëó
+            auto oneKey = asOne.find(tmp_a[0]); // Поиск комбинации по первому символу
             auto oneKeyEnd = asOne.end();
-            if (oneKey != oneKeyEnd) // Åñëè êîìáèíàöèÿ íàéäåíà
+            if (oneKey != oneKeyEnd) // Если комбинация найдена
             {
-                if ((tmp_a + tmp_b) == oneKey->second) // Åñëè íàøà ïàðà ñîâïàäàåò ñ êîìáèíàöèåé
+                if ((tmp_a + tmp_b) == oneKey->second) // Если наша пара совпадает с комбинацией
                 {
-                    // Ïåðåçàïèñü ïðîøëîãî èòåðàòîðà
+                    // Перезапись прошлого итератора
                     itPreviosLetter->origin = oneKey->second;
                     itPreviosLetter->printable = oneKey->second;
                     itPreviosLetter->technic = oneKey->second;
-                    if (it == itLast) // Åñëè ýòî ïîñëåäíèé ýëåìåíò, òî óäàëåíèå è âûõîä
+                    if (it == itLast) // Если это последний элемент, то удаление и выход
                     {
                         pt.basetext.erase_after(itPreviosLetter);
                         break;
                     }
-                    // Åñëè ýòî íå ïîñëåäíèé ýëåìåíò, òî ïåðåñêîê íà ñëåäóþùèé èòåðàòîð, âî èçáåæàíèå îøèáêè è óäàëåíèå íàñòîÿùåãî ñèìâîëà
+                    // Если это не последний элемент, то перескок на следующий итератор, во избежание ошибки и удаление настоящего символа
                     it++;
                     pt.basetext.erase_after(itPreviosLetter);
                 }
             }
-            itPreviosLetter = it; // Ñìåíà ïðîøëîãî èòåðàòîðà íà íàñòîÿùèé
+            itPreviosLetter = it; // Смена прошлого итератора на настоящий
         }
-        it++; // Ñëåäóþùèé èòåðàòîð
+        it++; // Следующий итератор
     }
 }
 
-// Ôóíêöèÿ äëÿ ïîäñ÷¸òà ðàçëè÷íîé èíôîðìàöèè ïî òåêñòó
+// Функция для подсчёта различной информации по тексту
 void Proccessing::numberProccessor()
 {
-    int i = 0; // Äëÿ ïîäñ÷¸òà íîìåðà áóêâû â òåêñòå
-    int j = 1; // Äëÿ ïîäñ÷¸òà ñëîãà â òåêñòå
-    int k = 1; // Äëÿ ïîäñ÷¸òà ñëîâà â òåêñòå
-    int num = 1; // Íå èñïîëüçóåòñÿ, íî â îðèãèíàëå áûëî
-    bool space = false; // Íåñ¸ò èíôîðìàöèþ, ÿâëÿåòñÿ ëè äàííûé èòåðèðóåìûé îáúåêò ïðîáåëîì
-    int space_pos = 0; // Äëÿ ïîäñ÷¸òà íàõîæäåíèÿ îáúåêòà â ñëîâå ïîñëå ïðîáåëà
+    int i = 0; // Для подсчёта номера буквы в тексте
+    int j = 1; // Для подсчёта слога в тексте
+    int k = 1; // Для подсчёта слова в тексте
+    int num = 1; // Не используется, но в оригинале было
+    bool space = false; // Несёт информацию, является ли данный итерируемый объект пробелом
+    int space_pos = 0; // Для подсчёта нахождения объекта в слове после пробела
 
-    int l_number = 0; // Íå èñïîëüçóåòñÿ, íî â îðèãèíàëå áûëî
+    int l_number = 0; // Не используется, но в оригинале было
     for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++, l_number++)
     {
         it->number = i;
@@ -197,20 +195,20 @@ void Proccessing::numberProccessor()
         {
             std::vector<std::string> words = CONFIG.getWords();
             space_pos++;
-            // Äëÿ ÷åãî âñ¸ äåëàåòñÿ äàëüøå íå ñîâñåì ïîìíþ, íî ïî-ôàêòó ýòî íè÷åãî íå äåëàåò
+            // Для чего всё делается дальше не совсем помню, но по-факту это ничего не делает
             bool flag = false;
             for (int t = 0; t < words.size(); t++)
                 if (it->technic == words[t])
                     flag = true;
             space = (space && flag);
-            // Äî ýòîãî ìîìåíòà
+            // До этого момента
         }
         if (it->technic == "\n")
         {
-            // îáðàáîòêà
-            // P.S. õç ïî÷åìó ÿ íå ðåðàéòíóë îáðàáîòêó äëÿ ýòîãî, ìá êàêàÿ òî ïðîáëåìà
+            // обработка
+            // P.S. хз почему я не рерайтнул обработку для этого, мб какая то проблема
         }
-        // Îïðåäåëåíèå ãëàñíûõ îáúåêòîâ
+        // Определение гласных объектов
         std::vector<std::string> volves = CONFIG.getVolves();
         for (int t = 0; t < volves.size(); t++)
             if (it->printable == volves[t])
@@ -219,7 +217,7 @@ void Proccessing::numberProccessor()
                 j++;
                 break;
             }
-        // Îïðåäåëåíèå ñîãëàñíûõ îáúåêòîâ
+        // Определение согласных объектов
         std::vector<std::string> consonants = CONFIG.getConsonants();
         for (int t = 0; t < consonants.size(); t++)
             if (it->printable == consonants[t])
@@ -230,11 +228,11 @@ void Proccessing::numberProccessor()
         it->syll = j;
         i++;
         num++;
-        it->w_pos = space_pos; // Âîçíèêàëà îùèáêà ñ ýòèì, à èìåííî, çíà÷åíèÿ íå ñîõðàíÿëèñü
+        it->w_pos = space_pos; // Возникала ощибка с этим, а именно, значения не сохранялись
     }
 }
 
-// Íàõîæäåíèå èòåðàòîðîâ ãëàñíûõ è äîáàâëåíèå âîçâðàò ìàññèâà ñî âñåìè ýòèìè èòåðàòîðàìè
+// Нахождение итераторов гласных и добавление возврат массива со всеми этими итераторами
 void Proccessing::finderVolve()
 {
     for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++)
@@ -242,37 +240,36 @@ void Proccessing::finderVolve()
             volveIterators.push_back(it);
 }
 
-// Ñîçäàíèå ìàññèâà ýëåìåíòîâ, êîòîðûå ïðåäñòàâëÿþò ñîáîé 
-// èòåðàòîðû íà ñëåäóþùþþ ñîãëàñíóþ ïîñëå ïðîøëîé ãëàñîé è ïîñëåäíþþ ñîãëàñíóþ ïåðåä ñëåäóþùåé ãëàñíîé
+// Создание массива элементов, которые представляют собой 
+// итераторы на следующюю согласную после прошлой гласой и последнюю согласную перед следующей гласной
 void Proccessing::SPmaxProccessor()
 {
     std::vector<std::pair<std::forward_list<Letter>::iterator, std::forward_list<Letter>::iterator>> dividedVolveIterators;
 
-    std::forward_list<Letter>::iterator startVolveIt, middleVolveIt, endVolveIt; // èòåðàòîðû íà ïðîøëóþ, íàñòîÿùóþ è ñëåäóþùóþ ãëàñíóþ
+    std::forward_list<Letter>::iterator startVolveIt, middleVolveIt, endVolveIt; // итераторы на прошлую, настоящую и следующую гласную
     bool firstVolve = false;
 
-    if (volveIterators.size() > 1) // åñëè ãëàñíûõ áîëüøå îäíîé
+    if (volveIterators.size() > 1) // если гласных больше одной
     {
-        // ïåðâîíà÷àëüíîå ðàñïîëîæåíèå èòåðàòîðà â SP - âòîðîé ñèìâîë, ò.ê. ïåðâûé - ïðîáåë ïî óìîë÷àíèþ
+        // первоначальное расположение итератора в SP - второй символ, т.к. первый - пробел по умолчанию
         startVolveIt = pt.basetext.begin();
         startVolveIt++;
-        // èòåðàòîð íà ïåðâûé öåíòð = èòåðàòîð íà ïåðâóþ ãëàñíóþ
+        // итератор на первый центр = итератор на первую гласную
         middleVolveIt = volveIterators[0];
 
-        for (int i = 1; i < volveIterators.size(); i++) // ïðîõîä ïî âñåì èòåðàòîðàì ãëàñíûõ, íà÷èíàÿ ñî âòîðîãî
+        for (int i = 1; i < volveIterators.size(); i++) // проход по всем итераторам гласных, начиная со второго
         {
-            endVolveIt = volveIterators[i]; // êîíå÷íûé èòåðàòîð ýëåìåíòà ìàññèâà, óêàçûâàþùèé íà ïîñëåäíþþ ñîãëàñíóþ ïåðåä ñëåäóþùåé ãëàñíîé
+            endVolveIt = volveIterators[i]; // конечный итератор элемента массива, указывающий на последнюю согласную перед следующей гласной
 
-            if (middleVolveIt->origin != "\n")
-                dividedVolveIterators.push_back(std::make_pair(startVolveIt, endVolveIt)); // Ñîçäàíèå ïàðû íà ïîñëåäíþþ ñîãëàñíóþ ïîñëå ïîñëåäíåé ãëàñíîé è ïîñëåäíåé ñîãëàñíîé ïåðåä ñëåäóþùåé ãëàñíîé
+            dividedVolveIterators.push_back(std::make_pair(startVolveIt, endVolveIt)); // Создание пары на последнюю согласную после последней гласной и последней согласной перед следующей гласной
 
-            // ñëåäóþùåå íà÷àëî - ñëåäóþùàÿ ãëàñíàÿ ïîñëå òîé, êîòîðàÿ ÿâëÿåòñÿ öåíòðàëüíîé íà äàííûé ìîìåíò
-            // ñëåäîâàòåëüíî ñìåùàåì è ïåðåíàçíà÷àåì
+            // следующее начало - следующая гласная после той, которая является центральной на данный момент
+            // следовательно смещаем и переназначаем
             middleVolveIt++;
             startVolveIt = middleVolveIt;
-            // ñëåäóþùàÿ öåíòðàëüíàÿ - òà, êîòîðàÿ ÿâëÿëàñü ñëåäóþùåé íà äàííîì öèêëå
+            // следующая центральная - та, которая являлась следующей на данном цикле
             middleVolveIt = endVolveIt;
-            // äàëüøå èä¸ò óñëîâèå èç îðèãèíàëà íà óäàðåíèå
+            // дальше идёт условие из оригинала на ударение
 
             int counter = 0;
             for (auto it = startVolveIt; it != endVolveIt; it++)
@@ -280,20 +277,20 @@ void Proccessing::SPmaxProccessor()
                     counter++;
         }
 
-        // äîáàâëåíèå ýëåìåíòå ìàññèâà, êîòîðûé âêëþ÷àåò ñîãëàñíûå ïîñëå ïîñëåäíåé ãëàñíîé
+        // добавление элементе массива, который включает согласные после последней гласной
         endVolveIt = pt.basetext.end();
         startVolveIt++;
 
         if (middleVolveIt->origin != "\n")
             dividedVolveIterators.push_back(std::make_pair(startVolveIt, endVolveIt));
     }
-    else // åñëè ãëàñíàÿ îäíà - ýëåìåíò â ìàññèâå òîëüêî îäèí: âåñü Phonotext
+    else // если гласная одна - элемент в массиве только один: весь Phonotext
         dividedVolveIterators.push_back(std::make_pair(pt.basetext.begin(), pt.basetext.end()));
 
-    pt.SP = dividedVolveIterators; // ïåðåíîñ âñåõ ýëåìåíòîâ â Phonotext
+    pt.SP = dividedVolveIterators; // перенос всех элементов в Phonotext
 }
 
-// Íàõîæäåíèå èíäåêñîâ ãëàñíîé è ñîãëàñíûõ
+// Нахождение индексов гласной и согласных
 std::pair<int, std::vector<int>> Proccessing::findLocalWordsInds(std::pair<std::forward_list<Letter>::iterator, std::forward_list<Letter>::iterator> localSP)
 {
     int indVolve;
@@ -309,35 +306,35 @@ std::pair<int, std::vector<int>> Proccessing::findLocalWordsInds(std::pair<std::
     return std::make_pair(indVolve, indCons);
 }
 
-// Ñîçäàíèå êîìáèíàöèé
+// Создание комбинаций
 void Proccessing::combinationsProccessor(int N)
 {
     N++;
     for (int i = 0; i < pt.SP.size(); i++)
     {
-        // Èç êàæäîãî ó÷àñòêà âûáèðàåòñÿ ãëàñíàÿ è âñå ñîãëàñíûå â îòäåëüíûé ìàññèâ
+        // Из каждого участка выбирается гласная и все согласные в отдельный массив
         std::pair<int, std::vector<int>> localInds = findLocalWordsInds(pt.SP[i]);
         int posVolve = localInds.first;
         std::vector<int> posCons = localInds.second;
 
-        // Âñåâîçìîæíûå ïàðû êîìáèíàöèé èç èíäåêñîâ ìàññèâà ñîãëàñíûõ
+        // Всевозможные пары комбинаций из индексов массива согласных
         std::vector<std::pair<int, int>> consCombs;
         for (int j = 0; j < posCons.size(); j++)
             for (int k = j + 1; k < posCons.size(); k++)
                 consCombs.push_back(std::make_pair(posCons[j], posCons[k]));
 
-        // Ñáîðêà êîìáèíàöèé èç ÑÃÑ â ðàçíûõ âàðèàíòàõ (â èòåðàòîðàõ)
+        // Сборка комбинаций из СГС в разных вариантах (в итераторах)
         std::vector<std::vector<std::forward_list<Letter>::iterator>> itCombs;
         for (int j = 0; j < consCombs.size(); j++)
         {
-            // Ñîçäàíèå ñîðòèðîâàííûõ êîìáèíàöèé èç ïàð èíäåêñîâ ñîãëàññíûõ + èíäåêñ ãëàñíîé
+            // Создание сортированных комбинаций из пар индексов соглассных + индекс гласной
             std::vector<int> combs;
             combs.push_back(consCombs[j].first);
             combs.push_back(consCombs[j].second);
             combs.push_back(posVolve);
             sort(combs.begin(), combs.end());
 
-            // Ïîèñê èòåðàòîðîâ ýëåìåíòîâ âûáðàííûõ â ïàðû
+            // Поиск итераторов элементов выбранных в пары
             std::forward_list<Letter>::iterator it1, it2, it3;
             it1 = it2 = it3 = pt.SP[i].first;
 
@@ -382,11 +379,11 @@ void Proccessing::combinationsProccessor(int N)
         if (itCombs.size())
             pt.syllableCombinations.push_back(itCombs);
 
-        // Äîáàâèòü òî, ÷òî âûòàñêèâàåòñÿ èç èòåðàòîðîâ è îáðàáîòêó èç filter_combination
+        // Добавить то, что вытаскивается из итераторов и обработку из filter_combination
     }
 }
 
-// Ôóíêöèÿ, êîòîðàÿ ïîäñ÷èòûâàåò êîëè÷åñòâî ïîâòîðåíèé êîìáèíàöèé è èõ ñèëû
+// Функция, которая подсчитывает количество повторений комбинаций и их силы
 void Proccessing::repeatProccessor()
 {
     for (int n_syll = 0; n_syll < pt.syllableCombinations.size(); n_syll++)
@@ -395,7 +392,7 @@ void Proccessing::repeatProccessor()
         {
             std::pair<std::vector<std::string>, std::map<int, int>> a;
 
-            // Ñîçäàíèå ñòðóêòóðû Repeat, â êîòîðîé ðàñïîëîãàþòñÿ êîìáèíàöèè è èíôà î íèõ (êîìáèíàöèè ñîñòîÿò èç ÃÃ: ñîãëàñíàÿ + ñîãëàñíàÿ)
+            // Создание структуры Repeat, в которой распологаются комбинации и инфа о них (комбинации состоят из ГГ: гласная + гласная)
             for (auto& i : comb)
             {
                 if (i->isConsonant)
@@ -403,28 +400,28 @@ void Proccessing::repeatProccessor()
                 a.second.insert(std::make_pair(i->number, n_syll)); // Äîáàâëåíèå ñîãëàñíûõ èç ïîïàäàþùèõñÿ â êîìáèíàöèè
             }
 
-            // Óäàëåíèå ïîâòîðÿþùèõñÿ ñèìâîëîâ
+            // Удаление повторяющихся символов
             std::set<std::string> tmpWords(a.first.begin(), a.first.end());
             std::string setToStr = "";
             for (auto& i : tmpWords)
                 setToStr += i;
 
-            // Îòáðàñûâàíèå íåâàëèäíûõ êîìáèíàöèé
+            // Отбрасывание невалидных комбинаций
             std::pair<bool, double> filter = rusFilterComb(comb, CONFIG.getWords());
             if (filter.first)
             {
                 std::map<std::string, Repeat>::iterator it = pt.repeats.find(setToStr); // Ïðîâåðêà íà ïðèñóòñòâèå äàííîé êîìáèíàöèè â óæå äîáàâëåííûõ
-                if (it == pt.repeats.end()) // Ñîçäàíèå ñòðóêòóðû Repeat, åñëè ñòðóêòóðû ñ òàêîé êîìáèíàöèè åù¸ íåáûëî
+                if (it == pt.repeats.end()) // Создание структуры Repeat, если структуры с такой комбинации ещё небыло
                 {
                     Repeat tmpRepeat;
-                    tmpRepeat._words = tmpWords; // Óíèêàëüíûå ñèìâîëû ñòðóêòóðû
-                    tmpRepeat.count = 1; // Ñòðóêòóðà òîëüêî ñîçäà¸òñÿ, ñëåäîâàòåëüíî ýòî òîëüêî ïåðâàÿ äîáàâëåííàÿ
-                    tmpRepeat.power = filter.second; // Äîáàâëåíèå ñèëû ïåðâîé äîáàâëåííîé êîìáèíàöèè
+                    tmpRepeat._words = tmpWords; // Уникальные символы структуры
+                    tmpRepeat.count = 1; // Структура только создаётся, следовательно это только первая добавленная
+                    tmpRepeat.power = filter.second; // Добавление силы первой добавленной комбинации
 
                     std::vector<Letter> tmpvector;
-                    for (auto& i : comb) // Äîáàâëåíèå âñåõ îáúåêòîâ êëàññà Letter, êîòîðûå ïðèñóòñòâóþò â êîìáèíàöèè âî âðåìåííûé ìàññèâ
+                    for (auto& i : comb) // Добавление всех объектов класса Letter, которые присутствуют в комбинации во временный массив
                         tmpvector.push_back(*i);
-                    for (int i = 0; i < tmpvector.size(); i++) // Äîáàâëåíèå óíèêàëüíûõ îáúåêòîâ êëàññà Letter èç âðåìåííîãî ìàññèâà â ñòðóêòóðó
+                    for (int i = 0; i < tmpvector.size(); i++) // Добавление уникальных объектов класса Letter из временного массива в структуру
                     {
                         bool flag = false;
                         for (int j = 0; j < tmpRepeat.letters.size(); j++)
@@ -434,21 +431,22 @@ void Proccessing::repeatProccessor()
                             tmpRepeat.letters.push_back(tmpvector[i]);
                     }
 
-                    tmpRepeat.combs.push_back(comb); // Äîáàâëåíèå âñåõ êîìáèíàöèè â ñòðóêòóðó
+                    tmpRepeat.combs.push_back(comb); // Добавление всех комбинации в структуру
+
 
                     if (tmpRepeat._words.size() != 1)
-                        pt.repeats.insert(std::make_pair(setToStr, tmpRepeat)); // Ïåðåíîñ ñòðóêòóðû â îáúåêò Phonotext
+                        pt.repeats.insert(std::make_pair(setToStr, tmpRepeat)); // Перенос структуры в объект Phonotext
                 }
                 else
                 {
-                    it->second._words = tmpWords; // Óíèêàëüíûå ñèìâîëû ñòðóêòóðû
-                    it->second.count += 1; // Òàê êàê íàøëàñü åù¸ îäíà êîìáèíàöèÿ, ñ÷¸ò÷èê óâåëè÷èâàåòñÿ
-                    it->second.power = filter.second; // Äîáàâëåíèå ñèëû ñëåäóþùåé äîáàâëåííîé êîìáèíàöèè
+                    it->second._words = tmpWords; // Уникальные символы структуры
+                    it->second.count += 1; // Так как нашлась ещё одна комбинация, счётчик увеличивается
+                    it->second.power = filter.second; // Добавление силы следующей добавленной комбинации
 
-                    std::vector<Letter> tmpvector; // Óíèêàëüíûå ñèìâîëû ñòðóêòóðû
+                    std::vector<Letter> tmpvector; // Уникальные символы структуры
                     for (auto& i : comb)
                         tmpvector.push_back(*i);
-                    for (int i = 0; i < tmpvector.size(); i++) // Äîáàâëåíèå óíèêàëüíûõ îáúåêòîâ êëàññà Letter èç âðåìåííîãî ìàññèâà â ñòðóêòóðó
+                    for (int i = 0; i < tmpvector.size(); i++) // Добавление уникальных объектов класса Letter из временного массива в структуру
                     {
                         bool flag = false;
                         for (int j = 0; j < it->second.letters.size(); j++)
@@ -458,7 +456,7 @@ void Proccessing::repeatProccessor()
                             it->second.letters.push_back(tmpvector[i]);
                     }
 
-                    it->second.combs.push_back(comb); // Äîáàâëåíèå âñåõ êîìáèíàöèè â ñòðóêòóðó
+                    it->second.combs.push_back(comb); // Добавление всех комбинации в структуру
 
                 }
             }
@@ -467,17 +465,17 @@ void Proccessing::repeatProccessor()
     pt.repeats.erase(pt.repeats.begin());
 }
 
-// Ôóíêöèÿ ñîçäàíà äëÿ ôèëüòðàöèè êîìáèíàöèé, âîçâðàùàåò ïåðâûì ïàðàìåòðîì <false, 0>, åñëè êîìáèíàöèÿ ÿâëÿåòñÿ îòáðàñûâàåìîé,
-// âîçâðàùàåò <true, pwr>, åñëè êîìáèíàöèÿ âàëèäíà, ãäå pwr - ñèëà êîìáèíàöèè â òåêñòå
-// Äîðàáîòàòü: ñäåëàòü ïðîâåðêó íà òî, ÷òî òåêñò, ïîëó÷àåìûé èç êîìáèíàöèè ÿâëÿþòñÿ äâóêîíñîíàíòíûì
+// Функция создана для фильтрации комбинаций, возвращает первым параметром <false, 0>, если комбинация является отбрасываемой,
+// возвращает <true, pwr>, если комбинация валидна, где pwr - сила комбинации в тексте
+// Доработать: сделать проверку на то, что текст, получаемый из комбинации являются двуконсонантным
 std::pair<bool, double> Proccessing::rusFilterComb(std::vector<std::forward_list<Letter>::iterator> comb, std::vector<std::string> words)
 {
-    // Çàïèñü technic ñèìâîëîâ êîìáèíàöèè
+    // Запись technic символов комбинации
     std::string tmptxt = "";
     for (auto it = comb[0]; it != comb[2]; it++)
         tmptxt += it->technic;
 
-    // Îòáðàñûâàíèå ïîâòîðÿþùèõñÿ ñèìâîëîâ
+    // Отбрасывание повторяющихся символов
     std::string txt = "";
     for (int i = 0; i < tmptxt.size(); i++)
     {
@@ -490,41 +488,41 @@ std::pair<bool, double> Proccessing::rusFilterComb(std::vector<std::forward_list
             txt += tmptxt[i];
     }
 
-    // Êîìáèíàöèÿ íå âàëèäíà, åñëè ïîëó÷àåìûé òåêñò ìåíüøå òð¸õ ñèìâîëîâ
+    // Комбинация не валидна, если получаемый текст меньше трёх символов
     if (txt.size() < 3)
         return std::make_pair(false, 0);
 
-    // Ïîäñ÷¸ò ñèëû êîìáèíàöèè
+    // Подсчёт силы комбинации
     double pwr;
-    if (comb[0]->isVolve) // Åñëè ãëàñíàÿ ïåðâàÿ â êîìáèíàöèè
+    if (comb[0]->isVolve) // Если гласная первая в комбинации
         pwr = 2;
-    else if (comb[2]->isVolve) // Åñëè ãëàñíàÿ ïîñëåäíÿÿ â êîìáèíàöèè
+    else if (comb[2]->isVolve) // Если гласная последняя в комбинации
         pwr = 1;
-    else // Åñëè ãëàñíàÿ â ñåðåäèíå êîìáèíàöèè
+    else // Если гласная в середине комбинации
         pwr = 3;
 
     int count = 0;
-    for (auto& i : txt) // Ïîäñ÷¸ò êîëè÷åñòâà ïðîáåëîâ
+    for (auto& i : txt) // Подсчёт количества пробелов
         if (i == '|')
             count++;
-    pwr += (comb[2]->number - comb[0]->number - count == 2 ? 5 : 0); // Ðàñïîëîæåíèå ãëàñíûõ áåç ïðîáåëîâ
-    pwr += (count == 0 ? 2 : 0); // êîëè÷åñòâî ïðîáåëîâ
+    pwr += (comb[2]->number - comb[0]->number - count == 2 ? 5 : 0); // Расположение гласных без пробелов
+    pwr += (count == 0 ? 2 : 0); // количество пробелов
     count = 0;
-    for (int i = txt.size() - 3; i < txt.size(); i++) // ïîäñ÷¸ò êîëè÷åñòâà áóêâ "é" â ïîñëåäíèõ òð¸õ ñèìâîëàõ ïîëó÷àåìîãî òåêñòà
-        if (txt[i] == 'é')
+    for (int i = txt.size() - 3; i < txt.size(); i++) // подсчёт количества букв "й" в последних трёх символах получаемого текста
+        if ((txt[i] == "й"[0]) && (txt[i] == "й"[1]))
             count++;
     pwr += (count == 0 ? 4 : 0);
-    pwr += (!comb[0]->w_pos || !comb[1]->w_pos || !comb[2]->w_pos ? 1 : 0); // Ïðîâåðêà íà òî, ÿâëÿåòñÿ ëè ñèìâîëû èç êîìáèíàöèè ïåðâûì â ñëîâå
+    pwr += (!comb[0]->w_pos || !comb[1]->w_pos || !comb[2]->w_pos ? 1 : 0); // Проверка на то, является ли символы из комбинации первым в слове
     pwr /= 15;
 
     return std::make_pair(min_pwr <= pwr <= max_pwr, pwr);
 }
 
-// Âûâîä
-void Proccessing::print()
+// Вывод
+void Proccessing::print(std::string filename)
 {
     std::ofstream fout;
-    fout.open("out.txt");
+    fout.open(filename);
     fout << "===========\n";
 
     fout << "-----------\n";
@@ -633,7 +631,7 @@ void Proccessing::print()
     fout.close();
 }
 
-void Proccessing::createJson()
+void Proccessing::createJson(std::string filename)
 {
     std::string printable = "";
     for (auto it = pt.basetext.begin(); it != pt.basetext.end(); it++)
@@ -694,7 +692,7 @@ void Proccessing::createJson()
     str += "}\n";
 
     std::ofstream fout;
-    fout.open("outJson.json");
+    fout.open(filename);
     fout << str;
     fout.close();
 }
